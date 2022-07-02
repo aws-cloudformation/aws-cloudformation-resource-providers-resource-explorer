@@ -1,11 +1,6 @@
-## My Project
+## CloudFormation Resource Provider Package For Resource Explorer
 
-TODO: Fill this README out!
-
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+The CloudFormation Resource Provider Package For Amazon Resource Explorer
 
 ## Security
 
@@ -14,4 +9,3 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This project is licensed under the Apache-2.0 License.
-
