@@ -1,0 +1,86 @@
+package software.amazon.resourceexplorer2.index;
+
+// CloudFormation package
+import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
+import software.amazon.cloudformation.proxy.Logger;
+import software.amazon.cloudformation.proxy.ProgressEvent;
+import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
+import software.amazon.cloudformation.proxy.HandlerErrorCode;
+import software.amazon.cloudformation.proxy.OperationStatus;
+
+// Resource Explorer package
+import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
+import software.amazon.awssdk.services.resourceexplorer.model.ListIndexesRequest;
+import software.amazon.awssdk.services.resourceexplorer.model.ListIndexesResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+// TODO: Delete these import before publishing.
+import software.amazon.awssdk.regions.Region;
+import java.net.URI;
+
+
+public class ListHandler extends BaseHandler<CallbackContext> {
+
+    private final ResourceExplorerClient client;
+
+    public ListHandler() {
+
+        // TODO: Delete endpointOverride and region before publishing.
+        client = ResourceExplorerClient.builder()
+                .endpointOverride(URI.create("https://resource-explorer-2.us-west-2.api.aws"))
+                .region(Region.US_WEST_2)
+                .build();
+    }
+    @Override
+    public ProgressEvent<ResourceModel, CallbackContext> handleRequest(
+            final AmazonWebServicesClientProxy proxy,
+            final ResourceHandlerRequest<ResourceModel> request,
+            final CallbackContext callbackContext,
+            final Logger logger) {
+
+        final ResourceModel model = request.getDesiredResourceState();
+        List<ResourceModel> models = new ArrayList<>();
+
+        ListIndexesResponse listIndexesResponse;
+        String thisNextToken = null;
+
+        // ListIndexes have a maximum amount of indexes that it can list for every request.
+        // If the existed indexes in the account are more than the maximum amount, ListIndexesResponse
+        // returns with a token, so users can list the rest of the indexes if they want.
+        // List Handler returns all indexes, therefore, we need to repeat the ListIndexesRequest until
+        // there is no more token in the response.
+        do {
+            // Build the ListIndexesRequest based on the Index type of the current model,
+            // so we can make sure the model existed in the result list.
+            ListIndexesRequest listIndexesRequest = ListIndexesRequest.builder()
+                    .nextToken(thisNextToken)
+                    .build();
+            logger.log("[LIST handler] listIndexesRequest: " + listIndexesRequest);
+            try {
+                listIndexesResponse = proxy.injectCredentialsAndInvokeV2(listIndexesRequest, client::listIndexes);
+            } catch (RuntimeException e) {
+                HandlerErrorCode errorCode = Convertor.convertExceptionToErrorCode(e, logger);
+                logger.log(String.format("[LIST handler] Error Code: %s.", errorCode));
+                return ProgressEvent.failed(model, callbackContext, errorCode, e.getMessage());
+            }
+
+            List<ResourceModel> listOfResponse = new ArrayList<>();
+            logger.log("[LIST handler] ListIndexesResponses.indexes: " + listIndexesResponse.indexes());
+            listOfResponse = listIndexesResponse.indexes().stream()
+                    .map(index -> ResourceModel.builder()
+                            .arn(index.arn())
+                            .build())
+                    .collect(Collectors.toList());
+            logger.log("[LIST handler] listOfResponse: " + listOfResponse);
+            models.addAll(listOfResponse);
+            thisNextToken = listIndexesResponse.nextToken();
+        } while (thisNextToken != null);
+
+        return ProgressEvent.<ResourceModel, CallbackContext>builder()
+                .resourceModels(models)
+                .status(OperationStatus.SUCCESS)
+                .build();
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "resource": "/{proxy+}",
+    "credentials": {},
+    "action": "CREATE",
+    "MemorySize": "1024",
+    "request": {
+        "desiredResourceState": {
+            "ViewName": "samView1",
+            "IncludedProperties": [
+                {
+                    "Name": "tags"
+                }
+            ],
+            "Filters": {
+                "FilterString": "Service:s3 Region:us-east-1"
+            },
+            "Tags": {
+                "Classification": "technology"
+            }
+        },
+        "logicalResourceIdentifier": "resource-explorer-2"
+    },
+    "callbackContext": null
+}

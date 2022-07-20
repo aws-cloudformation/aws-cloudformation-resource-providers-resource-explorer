@@ -1,0 +1,22 @@
+{
+    "resource": "/{proxy+}",
+    "credentials": {},
+    "action": "CREATE",
+    "MemorySize": "1024",
+    "request": {
+        "desiredResourceState": {
+            "Tags": [
+                {
+                    "Key": "purpose",
+                    "Value": "same test"
+                },
+                {
+                    "Key": "keyname2",
+                    "Value": "value2"
+                }
+            ]
+        },
+        "logicalResourceIdentifier": "resource-explorer-2"
+    },
+    "callbackContext": null
+}

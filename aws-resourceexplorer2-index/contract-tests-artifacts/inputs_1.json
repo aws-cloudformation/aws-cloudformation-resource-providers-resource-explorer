@@ -1,0 +1,30 @@
+{
+    "CreateInputs": {
+        "Type": "LOCAL",
+        "Tags": {
+            "purpose": "contract test",
+            "Type": "contract test"
+        }
+    },
+    "PatchInputs": [
+        {
+            "op": "remove",
+            "path": "/Tags/purpose"
+        },
+        {
+            "op": "add",
+            "path": "/Tags/Temporary",
+            "value": "Yes"
+        },
+        {
+            "op": "add",
+            "path": "/Tags/Purpose",
+            "value": "Update in contract tests"
+        },
+        {
+            "op": "replace",
+            "path": "/Tags/Type",
+            "value": "Contract tests"
+        }
+    ]
+}

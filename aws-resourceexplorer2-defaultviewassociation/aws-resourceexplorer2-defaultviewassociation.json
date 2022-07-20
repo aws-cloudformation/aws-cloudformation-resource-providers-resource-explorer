@@ -1,0 +1,36 @@
+{
+    "typeName": "AWS::ResourceExplorer2::DefaultViewAssociation",
+    "description": "Definition of AWS::ResourceExplorer2::DefaultViewAssociation Resource Type",
+    "properties": {
+        "ViewArn": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "ViewArn"
+    ],
+    "createOnlyProperties": [
+        "/properties/ViewArn"
+    ],
+    "primaryIdentifier": [
+        "/properties/ViewArn"
+    ],
+    "handlers": {
+        "create": {
+            "permissions": [
+                "resource-explorer-2:AssociateDefaultView"
+            ]
+        },
+        "read": {
+            "permissions": [
+                "resource-explorer-2:GetDefaultView"
+            ]
+        },
+        "delete": {
+            "permissions": [
+                "resource-explorer-2:DisassociateDefaultView"
+            ]
+        }
+    },
+    "additionalProperties": false
+}

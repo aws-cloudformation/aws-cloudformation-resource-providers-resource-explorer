@@ -1,0 +1,13 @@
+{
+    "resource": "/{proxy+}",
+    "credentials": {},
+    "action": "DELETE",
+    "MemorySize": "1024",
+    "request": {
+        "desiredResourceState": {
+            "Arn": "arn:aws:resource-explorer-2:us-west-2:123456789012:index/fd966440-8230-4fad-b9fc-2fd25fb9f57e"
+        },
+        "logicalResourceIdentifier": "resource-explorer-2"
+    },
+    "callbackContext": null
+}

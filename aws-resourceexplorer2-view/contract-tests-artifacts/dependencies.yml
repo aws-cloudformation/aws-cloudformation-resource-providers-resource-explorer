@@ -1,0 +1,6 @@
+Description: "This is the boostrap stacks to create Index for the contract tests."
+Resources:
+  IndexResource:
+    Type: AWS::ResourceExplorer2::Index
+    Properties:
+      Type: "LOCAL"

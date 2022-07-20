@@ -1,0 +1,38 @@
+{
+    "CreateInputs": {
+        "ViewName": "contractView",
+        "IncludedProperties": [
+            {
+                "Name": "tags"
+            }
+        ],
+        "Filters": {
+            "FilterString": "Service:s3 Region:us-east-1"
+        },
+        "Tags": {
+            "Purpose": "Contract Test 2",
+            "Temporary": "Yes"
+        }
+    },
+    "PatchInputs": [
+        {
+            "op": "remove",
+            "path": "/IncludedProperties"
+        },
+        {
+            "op": "replace",
+            "path": "/Filters/FilterString",
+            "value": "Service:s3 Region:us-west-2"
+        },
+        {
+            "op": "add",
+            "path": "/Tags/Type",
+            "value": "Test"
+        },
+        {
+            "op": "replace",
+            "path": "/Tags/Purpose",
+            "value": "Update in contract tests"
+        }
+    ]
+}

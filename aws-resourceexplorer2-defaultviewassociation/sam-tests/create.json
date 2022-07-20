@@ -1,0 +1,12 @@
+{
+    "resource": "/{proxy+}",
+    "action": "CREATE",
+    "MemorySize": "1024",
+    "request": {
+        "desiredResourceState": {
+            "ViewArn": "arn:aws:resource-explorer-2:us-east-1:123456789012:view/CFNStackView2/e277617d-fb92-4995-b95d-4cf029a7da0c"
+        },
+        "logicalResourceIdentifier": "resource-explorer-2"
+    },
+    "callbackContext": null
+}

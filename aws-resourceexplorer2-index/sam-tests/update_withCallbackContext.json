@@ -1,0 +1,25 @@
+{
+    "resource": "/{proxy+}",
+    "credentials": {},
+    "action": "UPDATE",
+    "MemorySize": "1024",
+    "request": {
+        "desiredResourceState": {
+            "Arn": "arn:aws:resource-explorer-2:us-west-2:123456789012:index/725fcb9b-7d91-4126-a1db-35bd469268e0",
+            "Type": "AGGREGATOR",
+            "Tags": [
+                {
+                    "Key": "Sam Test",
+                    "Value": "test aggregator"
+                }
+            ]
+        },
+        "logicalResourceIdentifier": "resource-explorer-2"
+    },
+    "callbackContext": {
+        "createInProgress": false,
+        "updateInProgress": true,
+        "retryCount": 1
+    },
+    "callbackDelaySeconds": 30
+}

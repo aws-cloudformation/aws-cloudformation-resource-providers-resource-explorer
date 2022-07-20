@@ -1,0 +1,11 @@
+{
+    "resource": "/{proxy+}",
+    "credentials": {},
+    "action": "READ",
+    "MemorySize": "1024",
+    "request": {
+        "desiredResourceState": {},
+        "logicalResourceIdentifier": "resource-explorer-2"
+    },
+    "callbackContext": null
+}

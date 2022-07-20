@@ -1,0 +1,5 @@
+{
+    "CreateInputs": {
+        "ViewArn": "{{awsresourceexplorer2defaultviewassociationcto1}}"
+    }
+}

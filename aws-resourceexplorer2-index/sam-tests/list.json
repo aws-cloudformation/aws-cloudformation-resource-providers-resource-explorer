@@ -1,0 +1,14 @@
+{
+    "resource": "/{proxy+}",
+    "credentials": {},
+    "action": "LIST",
+    "MemorySize": "1024",
+    "request": {
+        "desiredResourceState": {
+            "Arn": "arn:aws:resource-explorer-2:us-west-2:123456789012:index/12b4094d-44a2-4e0b-92d7-998271c77ea5",
+            "Type": "LOCAL"
+        },
+        "logicalResourceIdentifier": "resource-explorer-2"
+    },
+    "callbackContext": null
+}

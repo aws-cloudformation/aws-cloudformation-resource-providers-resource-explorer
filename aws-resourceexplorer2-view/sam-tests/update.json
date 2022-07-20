@@ -1,0 +1,24 @@
+{
+    "resource": "/{proxy+}",
+    "credentials": {},
+    "action": "UPDATE",
+    "MemorySize": "2048",
+    "request": {
+        "desiredResourceState": {
+            "ViewArn": "arn:aws:resource-explorer-2:us-west-2:123456789012:view/samView1/341f6236-028f-4f84-a00d-ac682015263e",
+            "IncludedProperties": [
+                {
+                    "Name": "tags"
+                }
+            ],
+            "Filters": {
+                "FilterString": "Service:s3 Region:us-west-1"
+            },
+            "Tags": {
+                "Purpose": "samUpdate"
+            }
+        },
+        "logicalResourceIdentifier": "resource-explorer-2"
+    },
+    "callbackContext": null
+}
