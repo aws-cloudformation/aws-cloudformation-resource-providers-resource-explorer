@@ -46,11 +46,12 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
             proxy.injectCredentialsAndInvokeV2(getViewRequest, client::getView);
         } catch (RuntimeException e){
             HandlerErrorCode errorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[DELETE handler] Error Code: %s.", errorCode));
-            return ProgressEvent.failed(model, callbackContext, errorCode, e.getMessage());
+            logger.log(String.format("[DELETE] Error Code: %s.", errorCode));
+            return ProgressEvent.failed(model, callbackContext, errorCode,
+                "Could not get the view to delete: " + e.getMessage());
         }
 
-        logger.log(String.format("[DELETE handler] The expected-delete View existed."));
+        logger.log(String.format("[DELETE] The expected view to delete existed."));
         DeleteViewRequest deleteViewRequest = DeleteViewRequest.builder()
                 .viewArn(model.getViewArn())
                 .build();
@@ -58,11 +59,11 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
             proxy.injectCredentialsAndInvokeV2(deleteViewRequest, client::deleteView);
         } catch (Exception e) {
             HandlerErrorCode errorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[DELETE handler] Error Code: %s.", errorCode));
-            return ProgressEvent.failed(model, callbackContext, errorCode, e.getMessage());
+            logger.log(String.format("[DELETE] Error Code: %s.", errorCode));
+            return ProgressEvent.failed(model, callbackContext, errorCode, "Could not delete the view: " + e.getMessage());
         }
 
-        logger.log(String.format("[DELETE handler] View is deleted."));
+        logger.log(String.format("[DELETE] View is deleted."));
 
         //The requested ViewArn is deleted, return null with default success status
         return ProgressEvent.defaultSuccessHandler(null);

@@ -55,8 +55,9 @@ public class ListHandler extends BaseHandler<CallbackContext> {
                 listViewsResponse = proxy.injectCredentialsAndInvokeV2(listViewsRequest, client::listViews);
             } catch (RuntimeException e) {
                 HandlerErrorCode errorCode = Convertor.convertExceptionToErrorCode(e, logger);
-                logger.log(String.format("[LIST handler] Error Code: %s.", errorCode));
-                return ProgressEvent.failed(model, callbackContext, errorCode, e.getMessage());
+                logger.log(String.format("[LIST] Error Code: %s.", errorCode));
+                return ProgressEvent.failed(model, callbackContext, errorCode,
+                    "Could not list views: " + e.getMessage());
             }
 
             List<ResourceModel> listOfResponse = new ArrayList<>();

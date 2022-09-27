@@ -50,15 +50,11 @@ public class ReadHandler extends BaseHandler<CallbackContext> {
 
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            String errorMessage = e.getMessage();
-            if (thisErrorCode == HandlerErrorCode.NotFound){
-                errorMessage = "View does not exist";
-            }
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, errorMessage);
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not get the view: " + e.getMessage());
         }
 
         ResourceModel resultModel = translateToResourceModel(getViewResponse);
-        logger.log("[READ handler] View existed.");
+        logger.log("[READ] View existed.");
         return ProgressEvent.<ResourceModel, CallbackContext>builder()
                 .resourceModel(resultModel)
                 .status(OperationStatus.SUCCESS)

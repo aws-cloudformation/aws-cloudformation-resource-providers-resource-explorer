@@ -422,7 +422,7 @@ public class CreateHandlerTest {
 
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isEqualTo("CREATE handler exceeded the maximum of retries.");
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InternalFailure);
 
         // Verify there is only one time invoke Resource Explorer request (GetIndexRequest) here.
@@ -470,7 +470,7 @@ public class CreateHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isEqualTo("Update Index Type failed and no index is created.");
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InternalFailure);
 
         // Capture the actual CreateIndexRequest,UpdateIndexTypeRequest and DeleteIndexRequest

@@ -47,9 +47,9 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
         // the request is invalid. We expect ViewArn of model to be null.
         String modelViewArn = model.getViewArn();
         if (!StringUtils.isNullOrEmpty(modelViewArn)){
-            logger.log("[CREATE Handler] ViewArn cannot be changed or updated. The caller ");
+            logger.log("[CREATE] ViewArn cannot be set by the caller.");
             return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.InvalidRequest,
-                    "ViewArn cannot be changed or updated." );
+                    "ViewArn cannot be set by the caller." );
         }
 
         CreateViewRequest createViewRequest = translateToCreateViewRequest(model, logger, request);
@@ -57,9 +57,10 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
         try {
             createViewResponse = proxy.injectCredentialsAndInvokeV2(createViewRequest, client::createView);
         } catch (Exception e) {
-            logger.log("[CREATE Handler] Error at  CreateView.");
+            logger.log("[CREATE] Error at CreateView.");
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, null);
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode,
+                "Could not create the view: " + e.getMessage());
         }
 
         model.setViewArn(createViewResponse.view().viewArn());

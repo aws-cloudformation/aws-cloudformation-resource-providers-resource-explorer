@@ -62,25 +62,19 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
             getIndexResponse = proxy.injectCredentialsAndInvokeV2(getIndexRequest, client::getIndex);
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[UPDATE handler] Error code at GetIndex: %s.", thisErrorCode));
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, e.getMessage());
+            logger.log(String.format("[UPDATE] Error code at GetIndex: %s.", thisErrorCode));
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode,
+                "Could not get the index to delete: " + e.getMessage());
         }
 
-        logger.log("[UPDATE handler] An index exists in this region.");
+        logger.log("[UPDATE] An index exists in this region.");
         // Check if the index wanted to be updated is the same as the existed one.
-        if ( !getIndexResponse.arn().equals(model.getArn())){
+        if ( !getIndexResponse.arn().equals(model.getArn()) || getIndexResponse.stateAsString().equalsIgnoreCase(DELETING) ||
+            getIndexResponse.stateAsString().equalsIgnoreCase(DELETED)){
             return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound,
-                    "Your desired index does not exist.");
+                    "The index to update does not exist or is being deleted.");
         }
-        logger.log("[UPDATE handler] The existed index is the index that users want to update.");
-
-        // If the index has "DELETING" or "DELETED" state, we consider as not existed,
-        // return NotFound error.
-        if (getIndexResponse.stateAsString().equalsIgnoreCase(DELETING) ||
-                getIndexResponse.stateAsString().equalsIgnoreCase(DELETED)){
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound,
-                    "Your desired index is deleted.");
-        }
+        logger.log("[UPDATE]The existing index is the index that users want to update.");
 
         // If there is no callbackContext, this is a new UPDATE handler call.
         if (callbackContext == null ) {
@@ -99,7 +93,8 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
 
         // If UpdateIndexType has not finished, and it already exceeded MAX_RETRIES, we return failed.
         if (callbackContext.getRetryCount() >= MAX_RETRIES){
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.InternalFailure, null);
+            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.InternalFailure,
+                "Exceeded the max retry count while updating the index.");
         }
 
         return ProgressEvent.defaultInProgressHandler(callbackContext, DELAY_CONSTANT, model);
@@ -129,16 +124,16 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
                 .type(model.getType().toUpperCase())
                 .build();
         UpdateIndexTypeResponse updateIndexTypeResponse;
-        logger.log("[UPDATE handler] UpdateIndexTypeRequest invokes.");
+        logger.log("[UPDATE] UpdateIndexTypeRequest invokes.");
         try{
             updateIndexTypeResponse = proxy.injectCredentialsAndInvokeV2(updateIndexTypeRequest,
                     client::updateIndexType);
         } catch (RuntimeException e) {
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[UPDATE handler] Error code at UpdateIndexType: %s.", thisErrorCode));
+            logger.log(String.format("[UPDATE] Error code at UpdateIndexType: %s.", thisErrorCode));
             // If this error is AlreadyExist, it meant that there is an existed aggregator,
             // users need to update that aggregator to be local before updating a new aggregator.
-            return ProgressEvent.failed(model, null, thisErrorCode, e.getMessage());
+            return ProgressEvent.failed(model, null, thisErrorCode, "Could not update the index type: " + e.getMessage());
         }
 
         logger.log("[UPDATE] Invoked UpdateIndexType successfully.");
@@ -159,13 +154,13 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
     private ProgressEvent<ResourceModel, CallbackContext> updateTagsHelper (
             AmazonWebServicesClientProxy proxy, ResourceModel model,
             ResourceHandlerRequest<ResourceModel> request, Logger logger){
-        logger.log("[UPDATE handler] updateTagsHelper invokes.");
+        logger.log("[UPDATE] updateTagsHelper invokes.");
         try {
             updateTags(proxy, request, logger);
         }catch (RuntimeException e) {
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[UPDATE handler] Update Tags error code: %s.", thisErrorCode));
-            return ProgressEvent.failed(model, null, thisErrorCode, e.getMessage());
+            logger.log(String.format("[UPDATE] Update Tags error code: %s.", thisErrorCode));
+            return ProgressEvent.failed(model, null, thisErrorCode, "Could not update tags for the index: " + e.getMessage());
         }
         return ProgressEvent.defaultSuccessHandler(model);
     }
@@ -174,7 +169,7 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
     private void updateTags ( AmazonWebServicesClientProxy proxy,
                               ResourceHandlerRequest<ResourceModel> request,
                               Logger logger) {
-        logger.log("[UPDATE handler] updateTags invokes.");
+        logger.log("[UPDATE] UpdateTags invoked.");
 
         ResourceModel desiredModel = request.getDesiredResourceState();
 
@@ -200,7 +195,7 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
                     .tagKeys(tagsToUntag)
                     .build();
             proxy.injectCredentialsAndInvokeV2(untagResourceRequest, client::untagResource);
-            logger.log(String.format("[UPDATE handler]  UntagResource removed some tags for %s.",
+            logger.log(String.format("[UPDATE] UntagResource removed some tags for %s.",
                     desiredModel.getArn()));
         }
 
@@ -211,7 +206,7 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
                     .tags(tagsToAddOrModify)
                     .build();
             proxy.injectCredentialsAndInvokeV2(tagResourceRequest, client::tagResource);
-            logger.log(String.format("[UPDATE handler]  TagResource updated tags for %s.",
+            logger.log(String.format("[UPDATE] TagResource updated tags for %s.",
                     desiredModel.getArn()));
         }
 

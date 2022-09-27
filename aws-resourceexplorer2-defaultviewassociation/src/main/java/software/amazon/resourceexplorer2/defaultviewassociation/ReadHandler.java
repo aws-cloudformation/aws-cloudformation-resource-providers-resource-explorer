@@ -45,12 +45,12 @@ public class ReadHandler extends BaseHandler<CallbackContext> {
             getDefaultViewResponse = proxy.injectCredentialsAndInvokeV2( getDefaultViewRequest, client::getDefaultView );
         } catch (Exception e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, null);
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not get the default view: " + e.getMessage());
         }
 
         // If there is no existed default view, return NotFound error
         if (getDefaultViewResponse.viewArn() == null){
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, null);
+            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, "No default view was found.");
         }
 
         model.setViewArn(getDefaultViewResponse.viewArn());

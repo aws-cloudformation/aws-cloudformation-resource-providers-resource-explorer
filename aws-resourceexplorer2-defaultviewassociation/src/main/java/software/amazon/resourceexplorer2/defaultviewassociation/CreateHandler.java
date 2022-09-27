@@ -50,13 +50,15 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
         } catch (Exception e){
             logger.log(String.format("[CREATE] Error occurred in GetDefaultView."));
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, null);
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not check default view: " + e.getMessage());
         }
 
-        // If a default view existed, and it is the desired default view, return AlreadyExist Error.
-        if (getDefaultViewResponse.viewArn() != null && getDefaultViewResponse.viewArn().equals(model.getViewArn())){
-            logger.log(String.format("[CREATE] Default View already existed."));
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.AlreadyExists, null);
+        logger.log(String.format("[CREATE] Default view arn: " + getDefaultViewResponse.viewArn()));
+
+        // If a default view exists, and it is the desired default view, return AlreadyExist Error.
+        if (getDefaultViewResponse.viewArn() != null){
+            logger.log(String.format("[CREATE] A default view is already associated."));
+            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
         }
 
         AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
@@ -68,8 +70,8 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
             logger.log(String.format("[CREATE] DefaultView created successfully."));
         } catch (Exception e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[CREATE] DefaultView failed: %s", thisErrorCode));
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, null);
+            logger.log(String.format("[CREATE] Creating DefaultView failed: %s", thisErrorCode));
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not associate a default view: " + e.getMessage());
         }
 
         return ProgressEvent.<ResourceModel, CallbackContext>builder()

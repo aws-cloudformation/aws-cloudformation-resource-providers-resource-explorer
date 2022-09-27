@@ -47,7 +47,7 @@ public class ListHandler extends BaseHandler<CallbackContext> {
         String thisNextToken = null;
 
         // ListIndexes have a maximum amount of indexes that it can list for every request.
-        // If the existed indexes in the account are more than the maximum amount, ListIndexesResponse
+        // If the existing indexes in the account are more than the maximum amount, ListIndexesResponse
         // returns with a token, so users can list the rest of the indexes if they want.
         // List Handler returns all indexes, therefore, we need to repeat the ListIndexesRequest until
         // there is no more token in the response.
@@ -57,23 +57,20 @@ public class ListHandler extends BaseHandler<CallbackContext> {
             ListIndexesRequest listIndexesRequest = ListIndexesRequest.builder()
                     .nextToken(thisNextToken)
                     .build();
-            logger.log("[LIST handler] listIndexesRequest: " + listIndexesRequest);
             try {
                 listIndexesResponse = proxy.injectCredentialsAndInvokeV2(listIndexesRequest, client::listIndexes);
             } catch (RuntimeException e) {
                 HandlerErrorCode errorCode = Convertor.convertExceptionToErrorCode(e, logger);
-                logger.log(String.format("[LIST handler] Error Code: %s.", errorCode));
-                return ProgressEvent.failed(model, callbackContext, errorCode, e.getMessage());
+                logger.log(String.format("[LIST] Error Code: %s.", errorCode));
+                return ProgressEvent.failed(model, callbackContext, errorCode, "Could not list indexes: " + e.getMessage());
             }
 
             List<ResourceModel> listOfResponse = new ArrayList<>();
-            logger.log("[LIST handler] ListIndexesResponses.indexes: " + listIndexesResponse.indexes());
             listOfResponse = listIndexesResponse.indexes().stream()
                     .map(index -> ResourceModel.builder()
                             .arn(index.arn())
                             .build())
                     .collect(Collectors.toList());
-            logger.log("[LIST handler] listOfResponse: " + listOfResponse);
             models.addAll(listOfResponse);
             thisNextToken = listIndexesResponse.nextToken();
         } while (thisNextToken != null);

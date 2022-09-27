@@ -50,30 +50,33 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
             getIndexResponse = proxy.injectCredentialsAndInvokeV2(getIndexRequest, client::getIndex);
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, null);
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode,
+                "Could not get the index to be deleted: " + e.getMessage());
         }
 
-        // Check if the existed index is the one that users want to delete.
+        // Check if the existing index is the one that users want to delete.
         if( !getIndexResponse.arn().equals(model.getArn())){
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, null);
+            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound,
+                "The index does not exist.");
         }
 
-        // When the existed index is the one that users want to delete, we need to check
+        // When the existing index is the one that users want to delete, we need to check
         // if it is already "DELETING" or "DELETED".
         if (getIndexResponse.stateAsString().equalsIgnoreCase(DELETING) ||
                 getIndexResponse.stateAsString().equalsIgnoreCase(DELETED)) {
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, null);
+            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound,
+                "The index has already been deleted.");
         }
 
         // Check if the index is not ACTIVE, we wait for the ACTIVE state.
         // . We want to make sure that we delete an ACTIVE index.
         if ( !getIndexResponse.stateAsString().equalsIgnoreCase(ACTIVE)){
             if(callbackContext != null){
-                logger.log("[DELETE handler] In progress waiting for being ACTIVE before deleting.");
+                logger.log("[DELETE] In progress waiting for the index to be ACTIVE before deleting.");
                 callbackContext.setRetryCount(callbackContext.getRetryCount()+1);
                 if (callbackContext.getRetryCount() >= MAX_RETRIES){
                     return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.InternalFailure,
-                            "Delete handler exceeded the maximum retries count");
+                            "Exceeded the max retry count while deleting the index.");
                 }
                 return ProgressEvent.defaultInProgressHandler(callbackContext, DELAY_CONSTANT, model);
             }
@@ -84,31 +87,7 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
 
         }
 
-        // Check if the index is AGGREGATOR, we need to update it to be LOCAL before deleting it.
-        if (getIndexResponse.typeAsString().equalsIgnoreCase(AGGREGATOR)){
-            UpdateIndexTypeRequest updateIndexTypeRequest = UpdateIndexTypeRequest.builder()
-                    .arn(model.getArn())
-                    .type(LOCAL)
-                    .build();
-            logger.log("[DELETE handler] UpdateIndexTypeRequest invokes to update AGGREGATOR " +
-                    "to LOCAL before deleting.");
-            try{
-                proxy.injectCredentialsAndInvokeV2(updateIndexTypeRequest, client::updateIndexType);
-            } catch (RuntimeException e) {
-                HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-                logger.log(String.format("[DELETE handler] Error code at UpdateIndexType: %s.", thisErrorCode));
-                // If this error is AlreadyExist, it meant that there is an existed aggregator,
-                // users need to update that aggregator to be local before updating a new aggregator.
-                return ProgressEvent.failed(model, null, thisErrorCode, e.getMessage());
-            }
-
-            logger.log("[DELETE handler] UpdateIndexType invoked successfully.");
-            CallbackContext newCallbackContext = CallbackContext.builder()
-                    .retryCount(1)
-                    .build();
-            return ProgressEvent.defaultInProgressHandler(newCallbackContext, DELAY_CONSTANT, model);
-        }
-        // When the existed index is the one that users want to delete, and it is not "DELETING"
+        // When the existing index is the one that users want to delete, and it is not "DELETING"
         // or "DELETED", we delete it.
         final DeleteIndexRequest deleteIndexRequest = DeleteIndexRequest.builder()
                 .arn(model.getArn())
@@ -118,7 +97,7 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
             String errorMessage = e.getMessage();
-            return ProgressEvent.failed(model, null, thisErrorCode, errorMessage);
+            return ProgressEvent.failed(model, null, thisErrorCode, "Could not delete the index: " + errorMessage);
         }
         return ProgressEvent.defaultSuccessHandler(null);
     }

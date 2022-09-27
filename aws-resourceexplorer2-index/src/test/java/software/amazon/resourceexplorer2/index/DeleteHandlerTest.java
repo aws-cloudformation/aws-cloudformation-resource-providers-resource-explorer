@@ -144,57 +144,10 @@ public class DeleteHandlerTest {
 
     }
 
-    // This tests the IN_PROGRESS status when calling DELETE handler on an AGGREGATOR index.
-    // We need to update the index to be LOCAL before we delete it.
-    @Test
-    public void handleRequest_DeleteAggregatorIndex_InProgressStatus() {
-
-        GetIndexRequest getIndexRequest = GetIndexRequest.builder().build();
-        GetIndexResponse getIndexResponse = GetIndexResponse.builder().arn(INDEX_ARN_1)
-                .state(ACTIVE)
-                .type(AGGREGATOR)
-                .build();
-
-        doReturn(getIndexResponse)
-                .when(proxy)
-                .injectCredentialsAndInvokeV2(eq(getIndexRequest), any());
-
-        final ResourceModel model = ResourceModel.builder()
-                .arn(INDEX_ARN_1)
-                .build();
-
-        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
-                .desiredResourceState(model)
-                .build();
-
-        final ProgressEvent<ResourceModel, CallbackContext> response
-                = handler.handleRequest(proxy, request, null, logger);
-
-        assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(OperationStatus.IN_PROGRESS);
-        assertThat(response.getCallbackContext()).isNotNull();
-        assertThat(response.getCallbackContext().getRetryCount()).isEqualTo(1);
-        assertThat(response.getCallbackDelaySeconds()).isEqualTo(DELAY_CONSTANT);
-        assertThat(response.getResourceModel()).isNotNull();
-        assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
-        assertThat(response.getErrorCode()).isNull();
-
-        // Verify that Resource Explorer request are invoked two times: GetIndexRequest and UpdateIndexTypeRequest.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(DeleteIndexRequest.class);
-        verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
-
-        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
-        assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(INDEX_ARN_1);
-        assertThat(invokedUpdateIndexTypeRequest.typeAsString()).isEqualTo(LOCAL);
-
-    }
-
-    // This tests the IN_PROGRESS status while waiting for an AGGREGATOR index to become LOCAL
+    // This tests the IN_PROGRESS status while waiting for an index to become ACTIVE
     // before we delete it.
     @Test
-    public void handleRequest_UpdateAGGREGATORToLocal_InProgressStatus() {
+    public void handleRequest_Update_InProgressStatus() {
 
         GetIndexRequest getIndexRequest = GetIndexRequest.builder().build();
         GetIndexResponse getIndexResponse = GetIndexResponse.builder().arn(INDEX_ARN_1)
@@ -272,7 +225,7 @@ public class DeleteHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isEqualTo("Delete handler exceeded the maximum retries count");
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InternalFailure);
 
         // Verify that only GetIndexRequest is invoked.
@@ -280,7 +233,7 @@ public class DeleteHandlerTest {
                 any(GetIndexRequest.class), any());
 
     }
-    // This tests the failed status when the existed index (no matter which state it is)
+    // This tests the failed status when the existing index (no matter which state it is)
     // is not the one we want to delete.
     @Test
     public void handleRequest_DesiredIndexNotExist_FailedStatus() {
@@ -312,7 +265,7 @@ public class DeleteHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.NotFound);
 
         // Verify that only GetIndexRequest is invoked.
@@ -320,7 +273,7 @@ public class DeleteHandlerTest {
                 any(GetIndexRequest.class), any());
     }
 
-    // This tests the failed status when the existed index is the one we want to delete, but
+    // This tests the failed status when the existing index is the one we want to delete, but
     // its state is "DELETING" or "DELETED". It means that it is already being deleted before DELETE
     // handler is called. Return NotFound.
     @Test
@@ -353,7 +306,7 @@ public class DeleteHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.NotFound);
 
         // Verify that only GetIndexRequest is invoked.

@@ -59,18 +59,18 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
 
         // If there is callbackContext, CREATE handler is IN_PROGRESS.
         // We use GetIndex to check the index state.
-        logger.log("[CREATE handler] IN_PROGRESS, GetIndex invokes.");
+        logger.log("[CREATE] Create in progress, invoking GetIndex.");
         GetIndexRequest getIndexRequest = GetIndexRequest.builder().build();
         GetIndexResponse getIndexResponse;
         try{
             getIndexResponse = proxy.injectCredentialsAndInvokeV2(getIndexRequest, client::getIndex);
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[CREATE handler] Error code: %s.", thisErrorCode));
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, e.getMessage());
+            logger.log(String.format("[CREATE] Error code: %s.", thisErrorCode));
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not get the index being created: " + e.getMessage());
         }
 
-        logger.log("[CREATE handler] GetIndex invoked successfully.");
+        logger.log("[CREATE] GetIndex invoked successfully.");
         // Check if the new created index is ACTIVE, then we reset retryCount and start
         // update index type if required.
         if (getIndexResponse.stateAsString().equalsIgnoreCase(ACTIVE)){
@@ -97,7 +97,7 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
         }
 
         // If the new index is still CREATING, we increment retryCount.
-        callbackContext.setRetryCount(callbackContext.getRetryCount() +1);
+        callbackContext.setRetryCount(callbackContext.getRetryCount() + 1);
         // If retryCount exceeds MAX_RETRIES, we stop waiting and start deleting the
         // created index before returning failed.
         if (callbackContext.getRetryCount() >= MAX_RETRIES && callbackContext.isCreateInProgress()){
@@ -108,12 +108,12 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
                 proxy.injectCredentialsAndInvokeV2(deleteIndexRequest, client::deleteIndex);
             } catch (RuntimeException e){
                 HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-                String errorMessage = e.getMessage();
-                return ProgressEvent.failed(model, null, thisErrorCode, errorMessage);
+                return ProgressEvent.failed(model, null, thisErrorCode,
+                    "Exceeded the max retry count while creating the index, then could not clean up the index: " + e.getMessage());
             }
-            logger.log("[CREATE handler] DeleteIndex invoked.");
+            logger.log("[CREATE] DeleteIndex invoked.");
             return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.InternalFailure,
-                    "CREATE handler exceeded the maximum of retries.");
+                    "Exceeded the max retry count while creating the index.");
         }
 
         return ProgressEvent.defaultInProgressHandler(callbackContext, DELAY_CONSTANT, model);
@@ -128,16 +128,16 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
                 .tags(TagTools.combineAllTypesOfTags(model, request, logger))
                 .build();
         CreateIndexResponse createIndexResponse;
-        logger.log("[CREATE handler] CreateIndex invokes to create an index.");
+        logger.log("[CREATE] Invoking CreateIndex.");
         try{
             createIndexResponse = proxy.injectCredentialsAndInvokeV2(createIndexRequest, client::createIndex);
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[CREATE handler] Error code: %s.", thisErrorCode));
-            return ProgressEvent.failed(model, null, thisErrorCode, e.getMessage());
+            logger.log(String.format("[CREATE] Error code: %s.", thisErrorCode));
+            return ProgressEvent.failed(model, null, thisErrorCode, "Could not create the index: " + e.getMessage());
         }
 
-        logger.log("[CREATE handler] CreateIndex invoked successfully.");
+        logger.log("[CREATE] CreateIndex invoked successfully.");
 
         // Set the new index arn and state for the Cfn resource model.
         model.setArn(createIndexResponse.arn());
@@ -150,7 +150,7 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
                 .build();
 
         // Check IndexState of the creation
-        logger.log("[CREATE handler] CreateIndexResponseState: "+ createIndexResponse.stateAsString());
+        logger.log("[CREATE] CreateIndexResponseState: "+ createIndexResponse.stateAsString());
         // Since any recent-created index has LOCAL index type as default, we need to make sure whether
         // users want a different index type. We need to check if the index is ACTIVE before staring the
         // updating process.
@@ -175,7 +175,7 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
         if(model.getType() == null || model.getType().equalsIgnoreCase(LOCAL)){
             model.setType(LOCAL);
             model.setIndexState(ACTIVE);
-            logger.log("[CREATE handler]  Type is local. No update index type.");
+            logger.log("[CREATE] Type is already local. No need to update index type.");
             return ProgressEvent.defaultSuccessHandler(model);
         }
 
@@ -186,25 +186,33 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
         UpdateIndexTypeResponse updateIndexTypeResponse;
         try{
             updateIndexTypeResponse = proxy.injectCredentialsAndInvokeV2(updateIndexTypeRequest, client::updateIndexType);
-        } catch (RuntimeException e){
+        } catch (RuntimeException updateException){
             // If there is exception while invoking UpdateIndexType,
             // we delete the index and return Failed.
             final DeleteIndexRequest deleteIndexRequest = DeleteIndexRequest.builder()
                     .arn(model.getArn())
                     .build();
-            proxy.injectCredentialsAndInvokeV2(deleteIndexRequest, client::deleteIndex);
+            try {
+                proxy.injectCredentialsAndInvokeV2(deleteIndexRequest, client::deleteIndex);
+            } catch (RuntimeException deleteException){
+                HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(deleteException, logger);
+                return ProgressEvent.failed(model, null,
+                        thisErrorCode,
+                        String.format("Index type could not be updated: %s, then could not delete the index: %",
+                            updateException.getMessage(), deleteException.getMessage()));
+            }
             model.setArn(null);
             model.setIndexState(null);
             return ProgressEvent.failed(model, null,
                     HandlerErrorCode.InternalFailure,
-                    "Update Index Type failed and no index is created.");
+                    "Index type could not be updated: " + updateException.getMessage());
         }
 
         model.setIndexState(updateIndexTypeResponse.stateAsString());
         if (updateIndexTypeResponse.stateAsString().equalsIgnoreCase(ACTIVE)){
             return ProgressEvent.defaultSuccessHandler(model);
         }
-        logger.log("[CREATE handler]  UpdateIndexType invoked successfully.");
+        logger.log("[CREATE] UpdateIndexType invoked successfully.");
         return ProgressEvent.defaultInProgressHandler(callbackContext, DELAY_CONSTANT, model);
 
     }

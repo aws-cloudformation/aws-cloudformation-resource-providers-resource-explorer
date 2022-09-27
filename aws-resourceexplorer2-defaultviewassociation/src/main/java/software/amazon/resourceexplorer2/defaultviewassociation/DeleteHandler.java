@@ -47,14 +47,14 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
         } catch (Exception e){
             logger.log(String.format("[DELETE] Error occurred in GetDefaultView."));
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, null);
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not get default view to be deleted: " + e.getMessage());
         }
 
         // If there is no default view, return NotFound error.
-        if (getDefaultViewResponse.viewArn()  == null ||
+        if (getDefaultViewResponse.viewArn() == null ||
                 !getDefaultViewResponse.viewArn().equals(model.getViewArn())){
             logger.log(String.format("[DELETE] Default View not found."));
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, null);
+            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, "Could not find the default view to disassociate.");
         }
 
         DisassociateDefaultViewRequest disassociateDefaultViewRequest = DisassociateDefaultViewRequest.builder().build();
@@ -64,7 +64,7 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
             disassociateDefaultViewResponse = proxy.injectCredentialsAndInvokeV2(disassociateDefaultViewRequest, client::disassociateDefaultView);
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, null);
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not disassociate the default view: " + e.getMessage());
         }
 
         return ProgressEvent.defaultSuccessHandler(null);

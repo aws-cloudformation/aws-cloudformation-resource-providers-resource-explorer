@@ -196,7 +196,7 @@ public class DeleteHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InvalidRequest);
     }
 }

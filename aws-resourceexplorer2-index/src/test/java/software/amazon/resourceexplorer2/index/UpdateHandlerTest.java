@@ -486,7 +486,7 @@ public class UpdateHandlerTest {
 
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InternalFailure);
 
         // Verify there is only one time invoke Resource Explorer request (GetIndexRequest) here.

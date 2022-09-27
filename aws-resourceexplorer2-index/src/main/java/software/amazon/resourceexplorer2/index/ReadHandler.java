@@ -43,17 +43,16 @@ public class ReadHandler extends BaseHandler<CallbackContext> {
         final GetIndexResponse getIndexResponse;
         try{
             getIndexResponse = proxy.injectCredentialsAndInvokeV2(getIndexRequest, client::getIndex);
-
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            logger.log(String.format("[READ handler] Error code: %s.", thisErrorCode));
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, e.getMessage());
+            logger.log(String.format("[READ] Error code: %s.", thisErrorCode));
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not get the index: " + e.getMessage());
         }
 
-        // If the existed index has "DELETING" or "DELETING" state, we consider it as NotExist/NotFound.
+        // If the existing index has "DELETING" or "DELETING" state, we consider it as NotExist/NotFound.
         if (getIndexResponse.stateAsString().equalsIgnoreCase(DELETING) ||
                 getIndexResponse.stateAsString().equalsIgnoreCase(DELETED)) {
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, null);
+            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, "The index has been deleted.");
         }
 
         model.setArn(getIndexResponse.arn());

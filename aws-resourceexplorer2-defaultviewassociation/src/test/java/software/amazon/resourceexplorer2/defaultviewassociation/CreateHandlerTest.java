@@ -93,10 +93,10 @@ public class CreateHandlerTest {
         assertThat(response.getErrorCode()).isNull();
     }
 
-    // This test verifies the success status of setting up a default view while there is
-    // an existed default view in an account, but it is not the view we want to set up.
+    // This test verifies the failure of setting up a default view while there is
+    // an existing default view in an account.
     @Test
-    public void handleRequest_ExistedNotEqualDefaultView_Success() {
+    public void handleRequest_ExistedNotEqualDefaultView() {
 
         GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
 
@@ -106,17 +106,6 @@ public class CreateHandlerTest {
 
         when(proxy.injectCredentialsAndInvokeV2(eq(getDefaultViewRequest), any()))
                 .thenReturn(getDefaultViewResponse);
-
-        AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
-                .viewArn(exampleArn1)
-                .build();
-
-        AssociateDefaultViewResponse associateDefaultViewResponse = AssociateDefaultViewResponse.builder()
-                .viewArn(exampleArn1)
-                .build();
-
-        when(proxy.injectCredentialsAndInvokeV2( eq(associateDefaultViewRequest), any()))
-                .thenReturn(associateDefaultViewResponse);
 
         final ResourceModel model = ResourceModel.builder()
                 .viewArn(exampleArn1)
@@ -130,13 +119,13 @@ public class CreateHandlerTest {
                 = handler.handleRequest(proxy, request, null, logger);
 
         assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
         assertThat(response.getCallbackContext()).isNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
-        assertThat(response.getErrorCode()).isNull();
+        assertThat(response.getMessage()).isNotNull();
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AlreadyExists);
     }
 
     // This test verifies the failed status of setting up the same default view already associated.
@@ -169,7 +158,7 @@ public class CreateHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AlreadyExists);
     }
 
@@ -196,7 +185,7 @@ public class CreateHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AccessDenied);
     }
 
@@ -224,7 +213,7 @@ public class CreateHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.NotFound);
     }
 
@@ -263,7 +252,7 @@ public class CreateHandlerTest {
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
-        assertThat(response.getMessage()).isNull();
+        assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InternalFailure);
     }
 }
