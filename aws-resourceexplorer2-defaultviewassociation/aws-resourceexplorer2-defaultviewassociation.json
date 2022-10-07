@@ -11,6 +11,9 @@
             "pattern": "^[0-9]{12}$"
         }
     },
+    "tagging": {
+        "taggable": false
+    },
     "required": [
         "ViewArn"
     ],
