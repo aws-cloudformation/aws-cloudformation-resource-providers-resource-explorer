@@ -30,8 +30,8 @@ public class DeleteHandlerTest {
     @Mock
     private Logger logger;
     private DeleteHandler handler;
-    private static final String exampleArn1 = "arn:aws:resource-explorer-2:us-west-2:123456789012:view/exampleView/2b1ae2fd-5c32-428f-92e3-ac8a2fd50f52";
-    private static final String exampleArn2 = "arn:aws:resource-explorer-2:us-west-2:123456789012:view/exampleView2/2b1ae2fd-5c32-428f-92e3-ac8a2fd50f52";
+    private static final String exampleArn = "arn:aws:resource-explorer-2:us-west-2:123456789012:view/exampleView/2b1ae2fd-5c32-428f-92e3-ac8a2fd50f52";
+    private static String ACCOUNT_ID = "123456789012";
 
     @BeforeEach
     public void setup() {
@@ -46,7 +46,7 @@ public class DeleteHandlerTest {
         GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
 
         GetDefaultViewResponse getDefaultViewResponse = GetDefaultViewResponse.builder()
-                .viewArn(exampleArn1)
+                .viewArn(exampleArn)
                 .build();
 
         when(proxy.injectCredentialsAndInvokeV2(eq(getDefaultViewRequest), any()))
@@ -60,11 +60,12 @@ public class DeleteHandlerTest {
                 .thenReturn(disassociateDefaultViewResponse);
 
         final ResourceModel model = ResourceModel.builder()
-                .viewArn(exampleArn1)
+                .accountId(ACCOUNT_ID)
                 .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
                 .build();
 
         final ProgressEvent<ResourceModel, CallbackContext> response
@@ -87,10 +88,11 @@ public class DeleteHandlerTest {
         when(proxy.injectCredentialsAndInvokeV2(any(), any()))
                 .thenReturn(getDefaultViewResponse);
 
-        final ResourceModel model = ResourceModel.builder().build();
+        final ResourceModel model = ResourceModel.builder().accountId(ACCOUNT_ID).build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
                 .build();
 
         final ProgressEvent<ResourceModel, CallbackContext> response
@@ -105,25 +107,16 @@ public class DeleteHandlerTest {
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.NotFound);
     }
 
-    // This test verifies that DELETE handler only deletes the desired ViewArn.
+    // This test verifies that DELETE handler only deletes using the correct AccountId.
     @Test
-    public void handleRequest_NotTheRightDefaultViewToDelete() {
-
-        GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
-
-        GetDefaultViewResponse getDefaultViewResponse = GetDefaultViewResponse.builder()
-                .viewArn(exampleArn1)
-                .build();
-
-        when(proxy.injectCredentialsAndInvokeV2(eq(getDefaultViewRequest), any()))
-                .thenReturn(getDefaultViewResponse);
-
+    public void handleRequest_NotTheRightAccountId() {
         final ResourceModel model = ResourceModel.builder()
-                .viewArn(exampleArn2)
+                .accountId("RandomValue")
                 .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
                 .build();
 
         final ProgressEvent<ResourceModel, CallbackContext> response
@@ -141,10 +134,11 @@ public class DeleteHandlerTest {
     @Test
     public void handleRequest_ThrowAccessDeniedException() {
 
-        final ResourceModel model = ResourceModel.builder().build();
+        final ResourceModel model = ResourceModel.builder().accountId(ACCOUNT_ID).build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
                 .build();
 
         when(proxy.injectCredentialsAndInvokeV2(any(), any()))
@@ -168,7 +162,7 @@ public class DeleteHandlerTest {
 
         GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
         GetDefaultViewResponse getDefaultViewResponse = GetDefaultViewResponse.builder()
-                .viewArn(exampleArn1)
+                .viewArn(exampleArn)
                 .build();
 
         when(proxy.injectCredentialsAndInvokeV2(eq(getDefaultViewRequest), any()))
@@ -180,11 +174,12 @@ public class DeleteHandlerTest {
                 .thenThrow(ValidationException.builder().build());
 
         final ResourceModel model = ResourceModel.builder()
-                .viewArn(exampleArn1)
+                .accountId(ACCOUNT_ID)
                 .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
                 .build();
 
         final ProgressEvent<ResourceModel, CallbackContext> response

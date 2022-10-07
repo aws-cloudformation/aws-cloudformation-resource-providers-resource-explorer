@@ -9,9 +9,19 @@ Resources:
     Properties:
       ViewName: "defaultViewAssociationView"
     DependsOn: IndexResource
+  ViewResource2:
+    Type: AWS::ResourceExplorer2::View
+    Properties:
+      ViewName: "defaultViewAssociationView2"
+    DependsOn: IndexResource
 Outputs:
   ViewArn:
     Value:
       Ref: ViewResource
     Export:
       Name: awsresourceexplorer2defaultviewassociationcto1
+  ViewArn2:
+    Value:
+      Ref: ViewResource2
+    Export:
+      Name: awsresourceexplorer2defaultviewassociationcto2

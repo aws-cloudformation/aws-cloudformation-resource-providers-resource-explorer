@@ -4,20 +4,32 @@
     "properties": {
         "ViewArn": {
             "type": "string"
+        },
+        "AccountId": {
+            "description": "The accountId of the caller account, which is used as the unique identifier for this resource.",
+            "type": "string",
+            "pattern": "^[0-9]{12}$"
         }
     },
     "required": [
         "ViewArn"
     ],
-    "createOnlyProperties": [
-        "/properties/ViewArn"
-    ],
     "primaryIdentifier": [
-        "/properties/ViewArn"
+        "/properties/AccountId"
+    ],
+    "readOnlyProperties": [
+        "/properties/AccountId"
     ],
     "handlers": {
         "create": {
             "permissions": [
+                "resource-explorer-2:GetDefaultView",
+                "resource-explorer-2:AssociateDefaultView"
+            ]
+        },
+        "update": {
+            "permissions": [
+                "resource-explorer-2:GetDefaultView",
                 "resource-explorer-2:AssociateDefaultView"
             ]
         },
@@ -28,6 +40,7 @@
         },
         "delete": {
             "permissions": [
+                "resource-explorer-2:GetDefaultView",
                 "resource-explorer-2:DisassociateDefaultView"
             ]
         }

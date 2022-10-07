@@ -1,6 +1,8 @@
 package software.amazon.resourceexplorer2.defaultviewassociation;
 
 // CloudFormation package
+import software.amazon.cloudformation.exceptions.CfnInternalFailureException;
+import software.amazon.cloudformation.exceptions.CfnNotFoundException;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.ProgressEvent;
@@ -30,6 +32,13 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
 
         final ResourceModel model = request.getDesiredResourceState();
 
+        // to behave like other resources, they need to delete using the actual primaryIdentifier, not a random value
+        if (!request.getAwsAccountId().equals(model.getAccountId())) {
+            final String message = String.format("Default view not found for %s", model.getAccountId());
+            logger.log(message);
+            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, message);
+        }
+
         // We need to check if there is a default view to delete.
         GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
         GetDefaultViewResponse getDefaultViewResponse;
@@ -42,8 +51,7 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
         }
 
         // If there is no default view, return NotFound error.
-        if (getDefaultViewResponse.viewArn() == null ||
-                !getDefaultViewResponse.viewArn().equals(model.getViewArn())){
+        if (getDefaultViewResponse.viewArn() == null){
             logger.log(String.format("[DELETE] Default View not found."));
             return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, "Could not find the default view to disassociate.");
         }

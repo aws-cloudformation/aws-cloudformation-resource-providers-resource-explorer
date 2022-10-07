@@ -33,6 +33,7 @@ public class ReadHandlerTest {
     private ReadHandler handler;
 
     private static String exampleArn = "arn:aws:resource-explorer-2:us-west-2:123456789012:view/exampleView/2b1ae2fd-5c32-428f-92e3-ac8a2fd50f52";
+    private static String ACCOUNT_ID = "123456789012";
 
     @BeforeEach
     public void setup() {
@@ -51,10 +52,13 @@ public class ReadHandlerTest {
         when(proxy.injectCredentialsAndInvokeV2(any(), any()))
                 .thenReturn(getDefaultViewResponse);
 
-        final ResourceModel model = ResourceModel.builder().build();
+        final ResourceModel model = ResourceModel.builder()
+            .accountId(ACCOUNT_ID)
+            .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
                 .build();
 
         final ProgressEvent<ResourceModel, CallbackContext> response
@@ -82,10 +86,13 @@ public class ReadHandlerTest {
         when(proxy.injectCredentialsAndInvokeV2(any(), any()))
                 .thenReturn(getDefaultViewResponse);
 
-        final ResourceModel model = ResourceModel.builder().build();
+        final ResourceModel model = ResourceModel.builder()
+            .accountId(ACCOUNT_ID)
+            .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
                 .build();
 
         final ProgressEvent<ResourceModel, CallbackContext> response
@@ -101,12 +108,38 @@ public class ReadHandlerTest {
     }
 
     @Test
+    public void handleRequest_WrongAccountId() {
+        final ResourceModel model = ResourceModel.builder()
+            .accountId("RandomValue")
+            .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+            .desiredResourceState(model)
+            .awsAccountId(ACCOUNT_ID)
+            .build();
+
+        final ProgressEvent<ResourceModel, CallbackContext> response
+            = handler.handleRequest(proxy, request, null, logger);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
+        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
+        assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
+        assertThat(response.getResourceModels()).isNull();
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.NotFound);
+    }
+
+    @Test
     public void handleRequest_ThrowAccessDeniedException() {
 
-        final ResourceModel model = ResourceModel.builder().build();
+        final ResourceModel model = ResourceModel.builder()
+            .accountId(ACCOUNT_ID)
+            .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
                 .build();
 
         when(proxy.injectCredentialsAndInvokeV2(any(), any()))

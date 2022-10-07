@@ -1,6 +1,8 @@
 package software.amazon.resourceexplorer2.defaultviewassociation;
 
 // CloudFormation package
+import software.amazon.cloudformation.exceptions.CfnInternalFailureException;
+import software.amazon.cloudformation.exceptions.CfnNotFoundException;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.ProgressEvent;
@@ -58,6 +60,8 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
         AssociateDefaultViewResponse associateDefaultViewResponse;
         try {
             associateDefaultViewResponse = proxy.injectCredentialsAndInvokeV2( associateDefaultViewRequest, client::associateDefaultView );
+            // only set the accountId if the request was successful.
+            model.setAccountId(request.getAwsAccountId());
             logger.log(String.format("[CREATE] DefaultView created successfully."));
         } catch (Exception e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);

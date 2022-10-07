@@ -1,5 +1,12 @@
 {
     "CreateInputs": {
         "ViewArn": "{{awsresourceexplorer2defaultviewassociationcto1}}"
-    }
+    },
+    "PatchInputs": [
+        {
+            "op": "replace",
+            "path": "/ViewArn",
+            "value": "{{awsresourceexplorer2defaultviewassociationcto2}}"
+        }
+    ]
 }
