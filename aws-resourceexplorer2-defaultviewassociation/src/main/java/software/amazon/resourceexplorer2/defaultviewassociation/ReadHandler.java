@@ -14,20 +14,13 @@ import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
 import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewRequest;
 import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewResponse;
 
-// TODO: Delete this import before publishing.
-import software.amazon.awssdk.regions.Region;
-
-import java.net.URI;
 
 public class ReadHandler extends BaseHandler<CallbackContext> {
-    private final ResourceExplorerClient client;
-    public ReadHandler() {
 
-        // TODO: Delete endpointOverride and region before publishing.
-        client = ResourceExplorerClient.builder()
-                .endpointOverride(URI.create("https://resource-explorer-2.us-west-2.api.aws"))
-                .region(Region.US_WEST_2)
-                .build();
+    private final ResourceExplorerClient client;
+
+    public ReadHandler() {
+        client = ClientFactory.getClient();
     }
 
     @Override

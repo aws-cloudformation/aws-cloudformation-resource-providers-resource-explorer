@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.resourceexplorer.model.GetViewResponse;
 import software.amazon.awssdk.services.resourceexplorer.model.View;
 import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
 import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceExplorerException;
+import software.amazon.awssdk.services.resourceexplorer.model.UnauthorizedException;
 
 import static software.amazon.resourceexplorer2.view.TestConstants.EXAMPLE_ARN;
 import static software.amazon.resourceexplorer2.view.TestConstants.VIEW_NAME;
@@ -158,7 +158,6 @@ public class ReadHandlerTest {
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AccessDenied);
     }
 
-    // TODO: Throw UnauthorizedException
     @Test
     public void handleRequest_Throw401Exception(){
 
@@ -173,9 +172,8 @@ public class ReadHandlerTest {
                 .build();
 
         when(proxy.injectCredentialsAndInvokeV2(any(), any()))
-                .thenThrow(ResourceExplorerException.builder()
-                        .statusCode(401)
-                        .build());
+                .thenThrow(UnauthorizedException.builder().build());
+
         ProgressEvent<ResourceModel, CallbackContext> response =
                 handler.handleRequest(proxy, request, null, logger);
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);

@@ -16,20 +16,13 @@ import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
 import static software.amazon.resourceexplorer2.index.IndexUtils.DELETING;
 import static software.amazon.resourceexplorer2.index.IndexUtils.DELETED;
 
-// TODO: Delete these import before publishing.
-import java.net.URI;
-import software.amazon.awssdk.regions.Region;
 
 public class ReadHandler extends BaseHandler<CallbackContext> {
 
     private final ResourceExplorerClient client;
 
     public ReadHandler() {
-        // TODO: Delete endpointOverride and region before publishing.
-        client = ResourceExplorerClient.builder()
-                .endpointOverride(URI.create("https://resource-explorer-2.us-west-2.api.aws"))
-                .region(Region.US_WEST_2)
-                .build();
+        client = ClientFactory.getClient();
     }
     @Override
     public ProgressEvent<ResourceModel, CallbackContext> handleRequest(

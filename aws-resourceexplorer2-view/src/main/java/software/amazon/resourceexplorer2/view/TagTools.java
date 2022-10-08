@@ -34,15 +34,13 @@ public class TagTools {
 
         // CloudFormation System Tags (SystemTags) are automatically created,
         // but we need to add them separately.
-        // TODO: We cannot support CloudFormation system tags now since the reserved "aws"
-        //  keyword cannot be added "manually".
-//        if (request.getSystemTags() != null) {
-//            tagMap.putAll(request.getSystemTags());
-//        }
-//        else{
-//            logger.log("[generateTagsForCreate] CFN system tags are unexpectedly null for "
-//                    + resourceModel.getViewName());
-//        }
+        if (request.getSystemTags() != null) {
+            tagMap.putAll(request.getSystemTags());
+        }
+        else{
+            logger.log("[GenerateTagsForCreate] CFN system tags are unexpectedly null for "
+                    + resourceModel.getViewName());
+        }
 
         return tagMap;
     }
@@ -62,7 +60,7 @@ public class TagTools {
             result.putAll(listTagsForResourceResponse.tags());
         }
 
-        logger.log("[listTagsForView] Invoked to list tags of " + ViewArn);
+        logger.log("[ListTagsForView] Invoked to list tags of " + ViewArn);
         return result;
 
     }

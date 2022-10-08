@@ -8,11 +8,13 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
 import software.amazon.awssdk.services.resourceexplorer.model.ConflictException;
 import software.amazon.awssdk.services.resourceexplorer.model.InternalServerException;
-import software.amazon.awssdk.services.resourceexplorer.model.ValidationException;
 import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
+// TODO: add in this exception
+// import software.amazon.awssdk.services.resourceexplorer.model.ServiceQuotaExceededException;
+import software.amazon.awssdk.services.resourceexplorer.model.ThrottlingException;
+import software.amazon.awssdk.services.resourceexplorer.model.UnauthorizedException;
+import software.amazon.awssdk.services.resourceexplorer.model.ValidationException;
 
-// TODO: Delete this import before publishing.
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceExplorerException;
 
 public class Convertor {
 
@@ -34,10 +36,15 @@ public class Convertor {
         else if (e instanceof InternalServerException) {
             return HandlerErrorCode.InternalFailure;
         }
-        // TODO: Catch UnauthorizedException.
-        else if (e instanceof ResourceExplorerException && ((ResourceExplorerException) e).statusCode() == 401){
+        else if (e instanceof UnauthorizedException) {
             return HandlerErrorCode.NotFound;
         }
+        else if (e instanceof ThrottlingException) {
+            return HandlerErrorCode.Throttling;
+        }
+        // else if (e instanceof ServiceQuotaExceededException) {
+        //     return HandlerErrorCode.ServiceLimitExceeded;
+        // }
         else{
             logger.log(String.format("Unexpected exception \"%s\"", e.getMessage()));
             return HandlerErrorCode.InternalFailure;

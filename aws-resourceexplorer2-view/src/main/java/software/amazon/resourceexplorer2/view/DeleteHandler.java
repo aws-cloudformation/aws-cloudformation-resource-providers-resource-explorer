@@ -12,22 +12,15 @@ import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
 import software.amazon.awssdk.services.resourceexplorer.model.DeleteViewRequest;
 import software.amazon.awssdk.services.resourceexplorer.model.GetViewRequest;
 
-import java.net.URI;
-
-// TODO: Delete this package before publishing.
-import software.amazon.awssdk.regions.Region;
 
 public class DeleteHandler extends BaseHandler<CallbackContext> {
 
     private final ResourceExplorerClient client;
 
     public DeleteHandler() {
-        // TODO: Delete endpointOverride and region before publishing
-        client = ResourceExplorerClient.builder()
-                .endpointOverride(URI.create("https://resource-explorer-2.us-west-2.api.aws"))
-                .region(Region.US_WEST_2)
-                .build();
+        client = ClientFactory.getClient();
     }
+
     @Override
     public ProgressEvent<ResourceModel, CallbackContext> handleRequest(
             final AmazonWebServicesClientProxy proxy,

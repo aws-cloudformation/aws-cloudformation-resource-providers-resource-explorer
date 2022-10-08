@@ -204,8 +204,7 @@ public class CreateHandlerTest {
         List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
 
         CreateIndexRequest invokedCreateIndexRequest = (CreateIndexRequest) invokedResourceExplorerRequest.get(0);
-        // TODO: Uncomment this assert when SYSTEM_TAGS can be added to create Tags for index.
-//        assertThat(invokedCreateIndexRequest.tags()).isEqualTo(SYSTEM_TAGS);
+        assertThat(invokedCreateIndexRequest.tags()).isEqualTo(SYSTEM_TAGS);
 
         UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(INDEX_ARN_1);
@@ -480,8 +479,7 @@ public class CreateHandlerTest {
         List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
 
         CreateIndexRequest invokedCreateIndexRequest = (CreateIndexRequest) invokedResourceExplorerRequest.get(0);
-        // TODO: Uncomment this assert when SYSTEM_TAGS can be added to create Tags for index.
-//        assertThat(invokedCreateIndexRequest.tags()).isEqualTo(SYSTEM_TAGS);
+        assertThat(invokedCreateIndexRequest.tags()).isEqualTo(SYSTEM_TAGS);
 
         UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(INDEX_ARN_1);

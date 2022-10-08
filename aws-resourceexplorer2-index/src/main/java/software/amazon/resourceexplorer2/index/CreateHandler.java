@@ -2,10 +2,10 @@ package software.amazon.resourceexplorer2.index;
 
 // CloudFormation package
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
+import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.ProgressEvent;
 import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
-import software.amazon.cloudformation.proxy.HandlerErrorCode;
 
 // Resource Explorer package
 import software.amazon.awssdk.services.resourceexplorer.model.CreateIndexRequest;
@@ -23,23 +23,12 @@ import static software.amazon.resourceexplorer2.index.IndexUtils.ACTIVE;
 import static software.amazon.resourceexplorer2.index.IndexUtils.AGGREGATOR;
 import static software.amazon.resourceexplorer2.index.IndexUtils.LOCAL;
 
-// TODO: Delete these import before publishing.
-import java.net.URI;
-import software.amazon.awssdk.regions.Region;
-
-
-
 public class CreateHandler extends BaseHandler<CallbackContext> {
 
     private final ResourceExplorerClient client;
 
     public CreateHandler() {
-
-        // TODO: Delete endpointOverride and region before publishing.
-        client = ResourceExplorerClient.builder()
-                .endpointOverride(URI.create("https://resource-explorer-2.us-west-2.api.aws"))
-                .region(Region.US_WEST_2)
-                .build();
+        client = ClientFactory.getClient();
     }
 
     @Override

@@ -13,9 +13,6 @@ public class IndexUtils {
     public static final String DELETING = "DELETING";
     public static final String DELETED = "DELETED";
 
-    // TODO: We may need to change DELAY_CONSTANT and MAX_RETRIES to match the real
-    //  functioned time of Index before publishing.
-
     // A callback is scheduled with an initial delay of no less than the number
     // of seconds of DELAY_CONSTANT.
     public static final int DELAY_CONSTANT = 30;

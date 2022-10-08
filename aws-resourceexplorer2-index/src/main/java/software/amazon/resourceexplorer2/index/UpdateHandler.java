@@ -29,22 +29,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// TODO: Delete these import before publishing.
-import software.amazon.awssdk.regions.Region;
-import java.net.URI;
-
 
 public class UpdateHandler extends BaseHandler<CallbackContext> {
 
     private final ResourceExplorerClient client;
 
     public UpdateHandler() {
-
-        // TODO: Delete endpointOverride and region before publishing.
-        client = ResourceExplorerClient.builder()
-                .endpointOverride(URI.create("https://resource-explorer-2.us-west-2.api.aws"))
-                .region(Region.US_WEST_2)
-                .build();
+        client = ClientFactory.getClient();
     }
     @Override
     public ProgressEvent<ResourceModel, CallbackContext> handleRequest(

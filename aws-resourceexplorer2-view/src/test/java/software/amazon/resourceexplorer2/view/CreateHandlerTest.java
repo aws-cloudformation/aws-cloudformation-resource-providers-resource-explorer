@@ -115,8 +115,7 @@ public class CreateHandlerTest {
         expectedTags.putAll(RESOURCE_TAGS);
         expectedTags.putAll(STACK_LEVEL_TAGS);
 
-        // TODO: Uncomment this when we support CloudFormation system tags.
-//        expectedTags.putAll(SYSTEM_TAGS);
+        expectedTags.putAll(SYSTEM_TAGS);
         assertThat(capturedRequestValue.tags()).containsExactlyEntriesOf(expectedTags);
 
     }

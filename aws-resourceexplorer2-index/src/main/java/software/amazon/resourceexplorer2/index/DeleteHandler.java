@@ -14,23 +14,15 @@ import software.amazon.awssdk.services.resourceexplorer.model.GetIndexRequest;
 import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
 import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeRequest;
 
-
-// TODO: Delete these import before publishing.
-import software.amazon.awssdk.regions.Region;
-import java.net.URI;
-
 import static software.amazon.resourceexplorer2.index.IndexUtils.*;
+
 
 public class DeleteHandler extends BaseHandler<CallbackContext> {
 
     private final ResourceExplorerClient client;
 
     public DeleteHandler() {
-        // TODO: Delete endpointOverride and region before publishing.
-        client = ResourceExplorerClient.builder()
-                .endpointOverride(URI.create("https://resource-explorer-2.us-west-2.api.aws"))
-                .region(Region.US_WEST_2)
-                .build();
+        client = ClientFactory.getClient();
     }
 
     @Override
