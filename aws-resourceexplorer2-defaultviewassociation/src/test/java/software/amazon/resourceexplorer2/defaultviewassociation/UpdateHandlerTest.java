@@ -58,7 +58,7 @@ public class UpdateHandlerTest {
 
         final ResourceModel model = ResourceModel.builder()
             .viewArn(exampleArn1)
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -94,7 +94,7 @@ public class UpdateHandlerTest {
 
         final ResourceModel model = ResourceModel.builder()
             .viewArn(exampleArn1)
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -140,7 +140,7 @@ public class UpdateHandlerTest {
 
         final ResourceModel model = ResourceModel.builder()
             .viewArn(exampleArn1)
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -162,10 +162,10 @@ public class UpdateHandlerTest {
     }
 
     @Test
-    public void handleRequest_incorrectAccountId_Failure() {
+    public void handleRequest_incorrectAssociatedAwsPrincipal_Failure() {
         final ResourceModel model = ResourceModel.builder()
             .viewArn(exampleArn1)
-            .accountId("RandomValue")
+            .associatedAwsPrincipal("RandomValue")
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -194,7 +194,7 @@ public class UpdateHandlerTest {
 
         final ResourceModel model = ResourceModel.builder()
             .viewArn(exampleArn1)
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -224,7 +224,7 @@ public class UpdateHandlerTest {
 
         final ResourceModel model = ResourceModel.builder()
             .viewArn(exampleArn1)
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -265,7 +265,7 @@ public class UpdateHandlerTest {
 
         final ResourceModel model = ResourceModel.builder()
             .viewArn(exampleArn1)
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()

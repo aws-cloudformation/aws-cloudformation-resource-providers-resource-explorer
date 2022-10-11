@@ -60,7 +60,7 @@ public class DeleteHandlerTest {
                 .thenReturn(disassociateDefaultViewResponse);
 
         final ResourceModel model = ResourceModel.builder()
-                .accountId(ACCOUNT_ID)
+                .associatedAwsPrincipal(ACCOUNT_ID)
                 .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -88,7 +88,7 @@ public class DeleteHandlerTest {
         when(proxy.injectCredentialsAndInvokeV2(any(), any()))
                 .thenReturn(getDefaultViewResponse);
 
-        final ResourceModel model = ResourceModel.builder().accountId(ACCOUNT_ID).build();
+        final ResourceModel model = ResourceModel.builder().associatedAwsPrincipal(ACCOUNT_ID).build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
@@ -107,11 +107,11 @@ public class DeleteHandlerTest {
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.NotFound);
     }
 
-    // This test verifies that DELETE handler only deletes using the correct AccountId.
+    // This test verifies that DELETE handler only deletes using the correct AssociatedAwsPrincipal.
     @Test
-    public void handleRequest_NotTheRightAccountId() {
+    public void handleRequest_NotTheRightAssociatedAwsPrincipal() {
         final ResourceModel model = ResourceModel.builder()
-                .accountId("RandomValue")
+                .associatedAwsPrincipal("RandomValue")
                 .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -134,7 +134,7 @@ public class DeleteHandlerTest {
     @Test
     public void handleRequest_ThrowAccessDeniedException() {
 
-        final ResourceModel model = ResourceModel.builder().accountId(ACCOUNT_ID).build();
+        final ResourceModel model = ResourceModel.builder().associatedAwsPrincipal(ACCOUNT_ID).build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(model)
@@ -174,7 +174,7 @@ public class DeleteHandlerTest {
                 .thenThrow(ValidationException.builder().build());
 
         final ResourceModel model = ResourceModel.builder()
-                .accountId(ACCOUNT_ID)
+                .associatedAwsPrincipal(ACCOUNT_ID)
                 .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()

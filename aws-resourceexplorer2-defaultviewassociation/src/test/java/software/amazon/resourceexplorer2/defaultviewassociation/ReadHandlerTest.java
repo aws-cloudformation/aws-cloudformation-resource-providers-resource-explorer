@@ -53,7 +53,7 @@ public class ReadHandlerTest {
                 .thenReturn(getDefaultViewResponse);
 
         final ResourceModel model = ResourceModel.builder()
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -87,7 +87,7 @@ public class ReadHandlerTest {
                 .thenReturn(getDefaultViewResponse);
 
         final ResourceModel model = ResourceModel.builder()
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -108,9 +108,9 @@ public class ReadHandlerTest {
     }
 
     @Test
-    public void handleRequest_WrongAccountId() {
+    public void handleRequest_WrongAssociatedAwsPrincipal() {
         final ResourceModel model = ResourceModel.builder()
-            .accountId("RandomValue")
+            .associatedAwsPrincipal("RandomValue")
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
@@ -134,7 +134,7 @@ public class ReadHandlerTest {
     public void handleRequest_ThrowAccessDeniedException() {
 
         final ResourceModel model = ResourceModel.builder()
-            .accountId(ACCOUNT_ID)
+            .associatedAwsPrincipal(ACCOUNT_ID)
             .build();
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()

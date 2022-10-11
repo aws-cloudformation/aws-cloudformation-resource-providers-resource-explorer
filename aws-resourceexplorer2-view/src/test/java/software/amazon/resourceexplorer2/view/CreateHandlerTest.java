@@ -24,6 +24,7 @@ import software.amazon.awssdk.services.resourceexplorer.model.CreateViewResponse
 import software.amazon.awssdk.services.resourceexplorer.model.View;
 import software.amazon.awssdk.services.resourceexplorer.model.InternalServerException;
 import software.amazon.awssdk.services.resourceexplorer.model.ConflictException;
+import software.amazon.awssdk.services.resourceexplorer.model.ServiceQuotaExceededException;
 
 //Mockito package
 import org.junit.jupiter.api.BeforeEach;
@@ -200,6 +201,28 @@ public class CreateHandlerTest {
                 handler.handleRequest(proxy, request, null, logger);
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InternalFailure);
+        assertThat(response.getResourceModel()).isNotNull();
+    }
+
+    @Test
+    public void handleRequest_ThrowServiceQuotaExceededException(){
+
+        final ResourceModel model = ResourceModel.builder()
+                .viewName(VIEW_NAME)
+                .includedProperties(MODEL_INCLUDED_PROPERTY_LIST)
+                .filters(MODEL_FILTERS)
+                .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .desiredResourceState(model)
+                .build();
+
+        when(proxy.injectCredentialsAndInvokeV2(any(), any()))
+                .thenThrow(ServiceQuotaExceededException.builder().build());
+        ProgressEvent<ResourceModel, CallbackContext> response =
+                handler.handleRequest(proxy, request, null, logger);
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.ServiceLimitExceeded);
         assertThat(response.getResourceModel()).isNotNull();
     }
 

@@ -41,7 +41,8 @@
             "type": "array",
             "items": {
                 "$ref": "#/definitions/IncludedProperty"
-            }
+            },
+            "insertionOrder": false
         },
         "Filters": {
             "$ref": "#/definitions/Filters"

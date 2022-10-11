@@ -60,8 +60,8 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
         AssociateDefaultViewResponse associateDefaultViewResponse;
         try {
             associateDefaultViewResponse = proxy.injectCredentialsAndInvokeV2( associateDefaultViewRequest, client::associateDefaultView );
-            // only set the accountId if the request was successful.
-            model.setAccountId(request.getAwsAccountId());
+            // only set the AssociatedAwsPrincipal if the request was successful.
+            model.setAssociatedAwsPrincipal(request.getAwsAccountId());
             logger.log(String.format("[CREATE] DefaultView created successfully."));
         } catch (Exception e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);

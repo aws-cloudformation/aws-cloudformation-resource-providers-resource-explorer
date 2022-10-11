@@ -9,8 +9,7 @@ import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedExcept
 import software.amazon.awssdk.services.resourceexplorer.model.ConflictException;
 import software.amazon.awssdk.services.resourceexplorer.model.InternalServerException;
 import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
-// TODO: add in this exception
-// import software.amazon.awssdk.services.resourceexplorer.model.ServiceQuotaExceededException;
+import software.amazon.awssdk.services.resourceexplorer.model.ServiceQuotaExceededException;
 import software.amazon.awssdk.services.resourceexplorer.model.ThrottlingException;
 import software.amazon.awssdk.services.resourceexplorer.model.UnauthorizedException;
 import software.amazon.awssdk.services.resourceexplorer.model.ValidationException;
@@ -42,9 +41,9 @@ public class Convertor {
         else if (e instanceof ThrottlingException) {
             return HandlerErrorCode.Throttling;
         }
-        // else if (e instanceof ServiceQuotaExceededException) {
-        //     return HandlerErrorCode.ServiceLimitExceeded;
-        // }
+        else if (e instanceof ServiceQuotaExceededException) {
+            return HandlerErrorCode.ServiceLimitExceeded;
+        }
         else{
             logger.log(String.format("Unexpected exception \"%s\"", e.getMessage()));
             return HandlerErrorCode.InternalFailure;

@@ -39,7 +39,7 @@ _Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormati
 
 ### Ref
 
-When you pass the logical ID of this resource to the intrinsic `Ref` function, Ref returns the AccountId.
+When you pass the logical ID of this resource to the intrinsic `Ref` function, Ref returns the AssociatedAwsPrincipal.
 
 ### Fn::GetAtt
 
@@ -47,7 +47,6 @@ The `Fn::GetAtt` intrinsic function returns a value for a specified attribute of
 
 For more information about using the `Fn::GetAtt` intrinsic function, see [Fn::GetAtt](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html).
 
-#### AccountId
+#### AssociatedAwsPrincipal
 
-The accountId of the caller account, which is used as the unique identifier for this resource.
-
+The AWS principal that the default view is associated with, used as the unique identifier for this resource.

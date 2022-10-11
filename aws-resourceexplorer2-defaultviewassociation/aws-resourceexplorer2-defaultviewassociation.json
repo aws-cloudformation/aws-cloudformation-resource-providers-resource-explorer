@@ -5,8 +5,8 @@
         "ViewArn": {
             "type": "string"
         },
-        "AccountId": {
-            "description": "The accountId of the caller account, which is used as the unique identifier for this resource.",
+        "AssociatedAwsPrincipal": {
+            "description": "The AWS principal that the default view is associated with, used as the unique identifier for this resource.",
             "type": "string",
             "pattern": "^[0-9]{12}$"
         }
@@ -18,10 +18,10 @@
         "ViewArn"
     ],
     "primaryIdentifier": [
-        "/properties/AccountId"
+        "/properties/AssociatedAwsPrincipal"
     ],
     "readOnlyProperties": [
-        "/properties/AccountId"
+        "/properties/AssociatedAwsPrincipal"
     ],
     "handlers": {
         "create": {

@@ -30,8 +30,8 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
         final ResourceModel model = request.getDesiredResourceState();
 
         // to behave like other resources, they need to update using the actual primaryIdentifier, not a random value
-        if (!request.getAwsAccountId().equals(model.getAccountId())) {
-            final String message = String.format("Default view not found for %s", model.getAccountId());
+        if (!request.getAwsAccountId().equals(model.getAssociatedAwsPrincipal())) {
+            final String message = String.format("Default view not found for %s", model.getAssociatedAwsPrincipal());
             logger.log(message);
             return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, message);
         }
