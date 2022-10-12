@@ -45,6 +45,10 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
                     "ViewArn cannot be set by the caller." );
         }
 
+        if (TagTools.containsSystemTags(model)) {
+            return ProgressEvent.failed(model, null, HandlerErrorCode.InvalidRequest, TagTools.INVALID_SYSTEM_TAG);
+        }
+
         CreateViewRequest createViewRequest = translateToCreateViewRequest(model, logger, request);
         CreateViewResponse createViewResponse;
         try {

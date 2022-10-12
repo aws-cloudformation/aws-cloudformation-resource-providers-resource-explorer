@@ -40,6 +40,10 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
 
         final ResourceModel model = request.getDesiredResourceState();
 
+        if (TagTools.containsSystemTags(model)) {
+            return ProgressEvent.failed(model, null, HandlerErrorCode.InvalidRequest, TagTools.INVALID_SYSTEM_TAG);
+        }
+
         // First, we check if this is the first time CREATE handler invoked.
         // If it is the first time, we go invokeCreateIndex().
         if (callbackContext == null) {

@@ -487,9 +487,8 @@ public class CreateHandlerTest {
 
         DeleteIndexRequest invokedDeleteIndexRequest = (DeleteIndexRequest) invokedResourceExplorerRequest.get(2);
         assertThat(invokedDeleteIndexRequest.arn()).isEqualTo(INDEX_ARN_1);
-
-
     }
+
     // This test throws AlreadyExist when invoking CreateIndex at the first try.
     @Test
     public void handleRequest_ThrowAlreadyExist_AtTheFirstTry() {
@@ -561,5 +560,31 @@ public class CreateHandlerTest {
         verify(proxy, times(1)).injectCredentialsAndInvokeV2(
                 any(GetIndexRequest.class), any());
 
+    }
+
+    @Test
+    public void handleRequest_SystemTagsInModel() {
+
+        final CreateHandler handler = new CreateHandler();
+
+        final ResourceModel model = ResourceModel.builder()
+                .type(LOCAL)
+                .tags(SYSTEM_TAGS)
+                .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .desiredResourceState(model)
+                .desiredResourceTags(STACK_LEVEL_TAGS)
+                .systemTags(SYSTEM_TAGS)
+                .build();
+
+
+        final ProgressEvent<ResourceModel, CallbackContext> response
+                = handler.handleRequest(proxy, request, null, logger);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InvalidRequest);
+        assertThat(response.getResourceModel()).isNotNull();
     }
 }

@@ -46,6 +46,10 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
 
         final ResourceModel model = request.getDesiredResourceState();
 
+        if (TagTools.containsSystemTags(model)) {
+            return ProgressEvent.failed(model, null, HandlerErrorCode.InvalidRequest, TagTools.INVALID_SYSTEM_TAG);
+        }
+
         // Check if an index exists in this region by GetIndex before updating.
         GetIndexRequest getIndexRequest = GetIndexRequest.builder().build();
         GetIndexResponse getIndexResponse;
@@ -116,6 +120,7 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
                 .build();
         UpdateIndexTypeResponse updateIndexTypeResponse;
         logger.log("[UPDATE] UpdateIndexTypeRequest invokes.");
+
         try{
             updateIndexTypeResponse = proxy.injectCredentialsAndInvokeV2(updateIndexTypeRequest,
                     client::updateIndexType);

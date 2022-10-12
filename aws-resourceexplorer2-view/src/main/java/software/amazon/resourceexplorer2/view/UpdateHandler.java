@@ -39,6 +39,10 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
 
         final ResourceModel desiredModel = request.getDesiredResourceState();
 
+        if (TagTools.containsSystemTags(desiredModel)) {
+            return ProgressEvent.failed(desiredModel, null, HandlerErrorCode.InvalidRequest, TagTools.INVALID_SYSTEM_TAG);
+        }
+
         UpdateViewRequest updateViewRequest = translateToUpdateViewRequest(desiredModel);
         try {
            proxy.injectCredentialsAndInvokeV2(updateViewRequest, client::updateView);

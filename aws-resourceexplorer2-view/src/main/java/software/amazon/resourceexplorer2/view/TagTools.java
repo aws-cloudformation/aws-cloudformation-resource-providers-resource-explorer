@@ -16,6 +16,8 @@ import java.util.Map;
 
 public class TagTools {
 
+    public static final String INVALID_SYSTEM_TAG = "aws: prefixed tag key names are not allowed for external use.";
+
     // Combine all types of tags: resource tags, stack level tags, and system tags.
     public static Map<String, String> combineAllTypesOfTags(
             ResourceModel resourceModel,
@@ -43,6 +45,20 @@ public class TagTools {
         }
 
         return tagMap;
+    }
+
+    public static boolean containsSystemTags(ResourceModel model) {
+        if (null == model.getTags() || model.getTags().isEmpty()) {
+            return false;
+        }
+
+        for (String tagKey : model.getTags().keySet()) {
+            if (tagKey.startsWith("aws:")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Get a list of tags of a view with ListTagsForResource

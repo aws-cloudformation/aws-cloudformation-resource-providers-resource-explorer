@@ -247,4 +247,26 @@ public class CreateHandlerTest {
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AlreadyExists);
         assertThat(response.getResourceModel()).isNotNull();
     }
+
+    @Test
+    public void handleRequest_SystemTagsInModel(){
+
+        final ResourceModel model = ResourceModel.builder()
+                .viewName(VIEW_NAME)
+                .viewArn(EXAMPLE_ARN)
+                .includedProperties(MODEL_INCLUDED_PROPERTY_LIST)
+                .filters(MODEL_FILTERS)
+                .tags(SYSTEM_TAGS)
+                .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .desiredResourceState(model)
+                .build();
+
+        ProgressEvent<ResourceModel, CallbackContext> response =
+                handler.handleRequest(proxy, request, null, logger);
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InvalidRequest);
+        assertThat(response.getResourceModel()).isNotNull();
+    }
 }

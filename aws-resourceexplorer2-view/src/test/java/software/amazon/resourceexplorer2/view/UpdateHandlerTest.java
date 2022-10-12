@@ -219,4 +219,37 @@ public class UpdateHandlerTest {
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.NotFound);
 
     }
+
+    @Test
+    public void handleRequest_SystemTagsInModel() {
+
+        final ResourceModel previousModel = ResourceModel.builder()
+                .viewArn(EXAMPLE_ARN)
+                .includedProperties(MODEL_INCLUDED_PROPERTY_LIST)
+                .filters(thisFilters)
+                .tags(PRE_STACK_LEVEL_TAGS)
+                .build();
+
+        final ResourceModel desiredModel = ResourceModel.builder()
+                .viewArn(EXAMPLE_ARN)
+                .includedProperties(MODEL_INCLUDED_PROPERTY_LIST)
+                .filters(newFilters)
+                .tags(SYSTEM_TAGS)
+                .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .previousResourceState(previousModel)
+                .desiredResourceState(desiredModel)
+                .systemTags(SYSTEM_TAGS)
+                .build();
+
+        final ProgressEvent<ResourceModel, CallbackContext> response
+                = handler.handleRequest(proxy, request, null, logger);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InvalidRequest);
+        assertThat(response.getResourceModel()).isNotNull();
+
+    }
 }

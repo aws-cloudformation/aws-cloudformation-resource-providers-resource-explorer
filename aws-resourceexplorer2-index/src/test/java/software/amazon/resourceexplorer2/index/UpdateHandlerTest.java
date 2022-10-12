@@ -662,6 +662,34 @@ public class UpdateHandlerTest {
         ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(
                 capturedRequest.capture(), any());
+    }
+
+    @Test
+    public void handleRequest_SystemTagsInModel() {
+
+        final ResourceModel desiredModel = ResourceModel.builder()
+                .tags(SYSTEM_TAGS)
+                .arn(INDEX_ARN_1)
+                .type(AGGREGATOR)
+                .build();
+
+        CallbackContext callbackContext = CallbackContext.builder()
+                .updateInProgress(true)
+                .retryCount(1)
+                .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .desiredResourceState(desiredModel)
+                .build();
+
+        final ProgressEvent<ResourceModel, CallbackContext> response
+                = handler.handleRequest(proxy, request, callbackContext, logger);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
+        assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.InvalidRequest);
+        assertThat(response.getResourceModel()).isNotNull();
 
     }
+
 }

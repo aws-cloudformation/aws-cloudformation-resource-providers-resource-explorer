@@ -51,7 +51,7 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
 
         // If a default view does not exist, return NotFound Error.
         if (getDefaultViewResponse.viewArn() == null || getDefaultViewResponse.viewArn().length() == 0){
-            logger.log(String.format("[UPDATE] A default view is already associated."));
+            logger.log(String.format("[UPDATE] A default view was not found to update."));
             return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.NotFound, "Default view not found.");
         }
 
