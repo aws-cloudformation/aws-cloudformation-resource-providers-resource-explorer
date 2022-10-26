@@ -29,6 +29,7 @@ import static software.amazon.resourceexplorer2.index.IndexUtils.AGGREGATOR;
 import static software.amazon.resourceexplorer2.index.IndexUtils.CREATING;
 import static software.amazon.resourceexplorer2.index.IndexUtils.LOCAL;
 import static software.amazon.resourceexplorer2.index.IndexUtils.UPDATING;
+import static software.amazon.resourceexplorer2.index.TestConstants.EMPTY_TAGS;
 import static software.amazon.resourceexplorer2.index.TestConstants.INDEX_ARN_1;
 import static software.amazon.resourceexplorer2.index.TestConstants.STACK_LEVEL_TAGS;
 import static software.amazon.resourceexplorer2.index.TestConstants.RESOURCE_TAGS;
@@ -204,7 +205,7 @@ public class CreateHandlerTest {
         List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
 
         CreateIndexRequest invokedCreateIndexRequest = (CreateIndexRequest) invokedResourceExplorerRequest.get(0);
-        assertThat(invokedCreateIndexRequest.tags()).isEqualTo(SYSTEM_TAGS);
+        assertThat(invokedCreateIndexRequest.tags()).isEqualTo(EMPTY_TAGS);
 
         UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(INDEX_ARN_1);
@@ -479,7 +480,7 @@ public class CreateHandlerTest {
         List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
 
         CreateIndexRequest invokedCreateIndexRequest = (CreateIndexRequest) invokedResourceExplorerRequest.get(0);
-        assertThat(invokedCreateIndexRequest.tags()).isEqualTo(SYSTEM_TAGS);
+        assertThat(invokedCreateIndexRequest.tags()).isEqualTo(EMPTY_TAGS);
 
         UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(INDEX_ARN_1);

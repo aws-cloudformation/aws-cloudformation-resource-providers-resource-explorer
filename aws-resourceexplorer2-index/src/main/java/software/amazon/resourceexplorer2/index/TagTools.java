@@ -36,16 +36,6 @@ public class TagTools {
             tagMap.putAll(resourceModel.getTags());
         }
 
-        // CloudFormation System Tags (SystemTags) are automatically created,
-        // but we need to add them separately.
-       if (request.getSystemTags() != null) {
-           tagMap.putAll(request.getSystemTags());
-       }
-       else{
-           logger.log("[GenerateTagsForCreate] CFN system tags are unexpectedly null for "
-                   + resourceModel.getArn());
-       }
-
         return tagMap;
     }
 
