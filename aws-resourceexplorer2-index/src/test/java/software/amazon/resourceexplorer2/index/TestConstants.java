@@ -37,4 +37,6 @@ public class TestConstants {
         put("aws:cloudformation:stack-id", "STACKID");
         put("aws:cloudformation:stack-name", "UnitTesStack");
     }};
+
+    protected static final Map<String, String> EMPTY_TAGS = new HashMap<String, String>();
 }

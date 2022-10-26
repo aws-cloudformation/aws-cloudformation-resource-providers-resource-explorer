@@ -116,7 +116,6 @@ public class CreateHandlerTest {
         expectedTags.putAll(RESOURCE_TAGS);
         expectedTags.putAll(STACK_LEVEL_TAGS);
 
-        expectedTags.putAll(SYSTEM_TAGS);
         assertThat(capturedRequestValue.tags()).containsExactlyEntriesOf(expectedTags);
 
     }
