@@ -9,9 +9,9 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.ListViewsRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ListViewsResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListViewsRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListViewsResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
 
 
 import org.junit.jupiter.api.BeforeEach;

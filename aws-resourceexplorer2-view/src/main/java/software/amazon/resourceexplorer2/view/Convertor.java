@@ -5,14 +5,14 @@ import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.HandlerErrorCode;
 
 //Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
-import software.amazon.awssdk.services.resourceexplorer.model.ConflictException;
-import software.amazon.awssdk.services.resourceexplorer.model.InternalServerException;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
-import software.amazon.awssdk.services.resourceexplorer.model.ServiceQuotaExceededException;
-import software.amazon.awssdk.services.resourceexplorer.model.ThrottlingException;
-import software.amazon.awssdk.services.resourceexplorer.model.UnauthorizedException;
-import software.amazon.awssdk.services.resourceexplorer.model.ValidationException;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ConflictException;
+import software.amazon.awssdk.services.resourceexplorer2.model.InternalServerException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ServiceQuotaExceededException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ThrottlingException;
+import software.amazon.awssdk.services.resourceexplorer2.model.UnauthorizedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ValidationException;
 
 
 public class Convertor {

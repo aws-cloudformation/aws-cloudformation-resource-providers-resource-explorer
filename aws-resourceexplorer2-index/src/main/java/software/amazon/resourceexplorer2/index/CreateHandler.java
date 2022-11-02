@@ -8,14 +8,14 @@ import software.amazon.cloudformation.proxy.ProgressEvent;
 import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.CreateIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.CreateIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.DeleteIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeResponse;
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
+import software.amazon.awssdk.services.resourceexplorer2.model.CreateIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.CreateIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.DeleteIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
 
 import static software.amazon.resourceexplorer2.index.IndexUtils.DELAY_CONSTANT;
 import static software.amazon.resourceexplorer2.index.IndexUtils.MAX_RETRIES;
@@ -25,7 +25,7 @@ import static software.amazon.resourceexplorer2.index.IndexUtils.LOCAL;
 
 public class CreateHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public CreateHandler() {
         client = ClientFactory.getClient();

@@ -9,17 +9,17 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.TagResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UntagResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ListTagsForResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ListTagsForResourceResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceExplorerRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.InternalServerException;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.TagResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UntagResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListTagsForResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListTagsForResourceResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceExplorer2Request;
+import software.amazon.awssdk.services.resourceexplorer2.model.InternalServerException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceNotFoundException;
 
 import static software.amazon.resourceexplorer2.index.TestConstants.INDEX_ARN_1;
 import static software.amazon.resourceexplorer2.index.TestConstants.INDEX_ARN_2;
@@ -147,18 +147,18 @@ public class UpdateHandlerTest {
         assertThat(response.getErrorCode()).isNull();
 
         // Capture the actual GetIndexRequest, UpdateIndexTypeRequest and UntagResourceRequest in the Update handler.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(4)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
+        List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
-        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
+        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorer2Request.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(desiredModel.getArn());
         assertThat(invokedUpdateIndexTypeRequest.typeAsString()).isEqualTo(desiredModel.getType());
 
-        ListTagsForResourceRequest invokedListTagsForResourceRequest = (ListTagsForResourceRequest) invokedResourceExplorerRequest.get(2);
+        ListTagsForResourceRequest invokedListTagsForResourceRequest = (ListTagsForResourceRequest) invokedResourceExplorer2Request.get(2);
         assertThat(invokedListTagsForResourceRequest.resourceArn()).isEqualTo(desiredModel.getArn());
 
-        UntagResourceRequest invokedUntagResourceRequest = (UntagResourceRequest) invokedResourceExplorerRequest.get(3);
+        UntagResourceRequest invokedUntagResourceRequest = (UntagResourceRequest) invokedResourceExplorer2Request.get(3);
         assertThat(invokedUntagResourceRequest.resourceArn()).isEqualTo(desiredModel.getArn());
         assertThat(invokedUntagResourceRequest.tagKeys().size()).isEqualTo(1);
         assertThat(invokedUntagResourceRequest.tagKeys().get(0)).isEqualTo("StackLevelTag");
@@ -225,7 +225,7 @@ public class UpdateHandlerTest {
         assertThat(response.getErrorCode()).isNull();
 
         // Verify there is only one time invoke Resource Explorer request (GetIndexRequest) here.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(
                 capturedRequest.capture(), any());
 
@@ -279,16 +279,16 @@ public class UpdateHandlerTest {
         assertThat(response.getErrorCode()).isNull();
 
         // Capture the actual GetIndexRequest, TagResourceRequest and UntagResourceRequest in the Update handler.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(3)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
+        List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
-        UntagResourceRequest invokedUntagResourceRequest = (UntagResourceRequest) invokedResourceExplorerRequest.get(1);
+        UntagResourceRequest invokedUntagResourceRequest = (UntagResourceRequest) invokedResourceExplorer2Request.get(1);
         assertThat(invokedUntagResourceRequest.resourceArn()).isEqualTo(desiredModel.getArn());
         assertThat(invokedUntagResourceRequest.tagKeys().size()).isEqualTo(1);
         assertThat(invokedUntagResourceRequest.tagKeys().get(0)).isEqualTo("StackLevelTag");
 
-        TagResourceRequest invokedTagResourceRequest = (TagResourceRequest) invokedResourceExplorerRequest.get(2);
+        TagResourceRequest invokedTagResourceRequest = (TagResourceRequest) invokedResourceExplorer2Request.get(2);
         assertThat(invokedTagResourceRequest.resourceArn()).isEqualTo(desiredModel.getArn());
         assertThat(invokedTagResourceRequest.tags().size()).isEqualTo(2);
 
@@ -437,11 +437,11 @@ public class UpdateHandlerTest {
         assertThat(response.getErrorCode()).isNull();
 
         // Capture the actual GetIndexRequest, TagResourceRequest and UntagResourceRequest in the Update handler.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
+        List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
-        TagResourceRequest invokedTagResourceRequest = (TagResourceRequest) invokedResourceExplorerRequest.get(1);
+        TagResourceRequest invokedTagResourceRequest = (TagResourceRequest) invokedResourceExplorer2Request.get(1);
         assertThat(invokedTagResourceRequest.resourceArn()).isEqualTo(desiredModel.getArn());
         assertThat(invokedTagResourceRequest.tags().size()).isEqualTo(3);
 
@@ -659,7 +659,7 @@ public class UpdateHandlerTest {
         assertThat(response.getResourceModel()).isNotNull();
 
         // Verify there is only one time invoke Resource Explorer request (GetIndexRequest) here.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(
                 capturedRequest.capture(), any());
     }

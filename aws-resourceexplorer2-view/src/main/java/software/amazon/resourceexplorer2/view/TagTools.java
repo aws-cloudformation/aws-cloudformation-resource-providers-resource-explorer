@@ -1,15 +1,15 @@
 package software.amazon.resourceexplorer2.view;
 
 // CloudFormation package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
 import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
 
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.ListTagsForResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ListTagsForResourceResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListTagsForResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListTagsForResourceResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class TagTools {
     }
 
     // Get a list of tags of a view with ListTagsForResource
-    public static Map<String, String> listTagsForView (ResourceExplorerClient client,
+    public static Map<String, String> listTagsForView (ResourceExplorer2Client client,
                                                        AmazonWebServicesClientProxy proxy,
                                                        Logger logger, String ViewArn){
         Map<String, String> result = new HashMap<String, String>();

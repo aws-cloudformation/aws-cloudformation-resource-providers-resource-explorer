@@ -19,12 +19,12 @@ import static software.amazon.resourceexplorer2.view.TestConstants.MODEL_INCLUDE
 import static software.amazon.resourceexplorer2.view.TestConstants.MODEL_FILTERS;
 
 //Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.CreateViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.CreateViewResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.View;
-import software.amazon.awssdk.services.resourceexplorer.model.InternalServerException;
-import software.amazon.awssdk.services.resourceexplorer.model.ConflictException;
-import software.amazon.awssdk.services.resourceexplorer.model.ServiceQuotaExceededException;
+import software.amazon.awssdk.services.resourceexplorer2.model.CreateViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.CreateViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.View;
+import software.amazon.awssdk.services.resourceexplorer2.model.InternalServerException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ConflictException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ServiceQuotaExceededException;
 
 //Mockito package
 import org.junit.jupiter.api.BeforeEach;

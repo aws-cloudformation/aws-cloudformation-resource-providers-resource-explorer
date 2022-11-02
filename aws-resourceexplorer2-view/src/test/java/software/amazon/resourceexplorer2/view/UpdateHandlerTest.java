@@ -9,11 +9,11 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceExplorerRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.TagResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UntagResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceExplorer2Request;
+import software.amazon.awssdk.services.resourceexplorer2.model.TagResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UntagResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceNotFoundException;
 
 
 import static software.amazon.resourceexplorer2.view.TestConstants.EXAMPLE_ARN;
@@ -112,15 +112,15 @@ public class UpdateHandlerTest {
         assertThat(response.getResourceModel()).isEqualTo(desiredModel);
 
         // Capture the actual UpdateViewRequest, and UntagResourceRequest in the Update handler.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateViewRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateViewRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
+        List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
-        UpdateViewRequest invokedUpdateViewRequest = (UpdateViewRequest) invokedResourceExplorerRequest.get(0);
+        UpdateViewRequest invokedUpdateViewRequest = (UpdateViewRequest) invokedResourceExplorer2Request.get(0);
         assertThat(invokedUpdateViewRequest.viewArn()).isEqualTo(desiredModel.getViewArn());
         assertThat(invokedUpdateViewRequest.filters().filterString()).isEqualTo(newFilters.getFilterString());
 
-        UntagResourceRequest invokedUntagResourceRequest = (UntagResourceRequest) invokedResourceExplorerRequest.get(1);
+        UntagResourceRequest invokedUntagResourceRequest = (UntagResourceRequest) invokedResourceExplorer2Request.get(1);
         assertThat(invokedUntagResourceRequest.tagKeys().size()).isEqualTo(1);
         assertThat(invokedUntagResourceRequest.tagKeys().get(0)).isEqualTo("StackLevelTag");
 
@@ -172,15 +172,15 @@ public class UpdateHandlerTest {
 
         // Capture the actual UpdateViewRequest and TagResourceRequest in the Update handler.
         // There is no UntagResourceRequest since no tag is removed.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateViewRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateViewRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
+        List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
-        UpdateViewRequest invokedUpdateViewRequest = (UpdateViewRequest) invokedResourceExplorerRequest.get(0);
+        UpdateViewRequest invokedUpdateViewRequest = (UpdateViewRequest) invokedResourceExplorer2Request.get(0);
         assertThat(invokedUpdateViewRequest.viewArn()).isEqualTo(desiredModel.getViewArn());
         assertThat(invokedUpdateViewRequest.filters().filterString()).isEqualTo(newFilters.getFilterString());
 
-        TagResourceRequest invokedTagResourceRequest = (TagResourceRequest) invokedResourceExplorerRequest.get(1);
+        TagResourceRequest invokedTagResourceRequest = (TagResourceRequest) invokedResourceExplorer2Request.get(1);
         Map<String, String> expectedAddAndModifyTags = new HashMap<String, String>() {{
             putAll(RESOURCE_TAGS);
             putAll(STACK_LEVEL_TAGS);

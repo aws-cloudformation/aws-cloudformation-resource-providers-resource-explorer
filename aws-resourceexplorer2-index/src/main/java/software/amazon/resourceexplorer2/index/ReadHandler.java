@@ -9,9 +9,9 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexResponse;
 
 import static software.amazon.resourceexplorer2.index.IndexUtils.DELETING;
 import static software.amazon.resourceexplorer2.index.IndexUtils.DELETED;
@@ -19,7 +19,7 @@ import static software.amazon.resourceexplorer2.index.IndexUtils.DELETED;
 
 public class ReadHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public ReadHandler() {
         client = ClientFactory.getClient();

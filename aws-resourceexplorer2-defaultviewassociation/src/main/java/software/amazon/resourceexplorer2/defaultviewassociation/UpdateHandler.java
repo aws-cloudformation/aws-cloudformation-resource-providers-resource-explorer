@@ -1,10 +1,10 @@
 package software.amazon.resourceexplorer2.defaultviewassociation;
 
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.AssociateDefaultViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.AssociateDefaultViewResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.AssociateDefaultViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.AssociateDefaultViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewResponse;
 import software.amazon.cloudformation.exceptions.CfnInternalFailureException;
 import software.amazon.cloudformation.exceptions.CfnNotFoundException;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
@@ -15,7 +15,7 @@ import software.amazon.cloudformation.proxy.OperationStatus;
 import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 
 public class UpdateHandler extends BaseHandler<CallbackContext> {
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
     public UpdateHandler() {
         client = ClientFactory.getClient();
     }

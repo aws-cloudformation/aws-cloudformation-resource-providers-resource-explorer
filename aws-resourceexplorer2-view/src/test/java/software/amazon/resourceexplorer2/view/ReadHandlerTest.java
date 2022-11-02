@@ -9,12 +9,12 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.GetViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetViewResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.View;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
-import software.amazon.awssdk.services.resourceexplorer.model.UnauthorizedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.View;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.UnauthorizedException;
 
 import static software.amazon.resourceexplorer2.view.TestConstants.EXAMPLE_ARN;
 import static software.amazon.resourceexplorer2.view.TestConstants.VIEW_NAME;

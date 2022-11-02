@@ -9,9 +9,9 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.GetViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetViewResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ReadHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public ReadHandler() {
         client = ClientFactory.getClient();
@@ -58,7 +58,7 @@ public class ReadHandler extends BaseHandler<CallbackContext> {
         List<IncludedProperty> modelIncludedProperties = new ArrayList<>();
 
         if (getViewResponse.view().includedProperties() != null) {
-            for (software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty
+            for (software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty
                     getViewIncludedProperty: getViewResponse.view().includedProperties()) {
                 IncludedProperty modelIncludedProperty = IncludedProperty.builder()
                         .name(getViewIncludedProperty.name())

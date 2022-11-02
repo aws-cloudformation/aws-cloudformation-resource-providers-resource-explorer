@@ -9,11 +9,11 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.ListIndexesRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ListIndexesResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.Index;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceExplorerRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ValidationException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListIndexesRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListIndexesResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.Index;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceExplorer2Request;
+import software.amazon.awssdk.services.resourceexplorer2.model.ValidationException;
 
 import static software.amazon.resourceexplorer2.index.TestConstants.INDEX_ARN_1;
 import static software.amazon.resourceexplorer2.index.TestConstants.INDEX_ARN_2;
@@ -158,7 +158,7 @@ public class ListHandlerTest {
 
 
         //Capture the actual CreateViewRequest inside the Create Handler
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest= ArgumentCaptor.forClass(ListIndexesRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest= ArgumentCaptor.forClass(ListIndexesRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
 
         ListIndexesRequest actualListIndexesRequest1 = (ListIndexesRequest) capturedRequest.getAllValues().get(0);

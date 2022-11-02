@@ -1,7 +1,7 @@
 package software.amazon.resourceexplorer2.defaultviewassociation;
 
 //CloudFormation package
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.ProgressEvent;
@@ -10,7 +10,7 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

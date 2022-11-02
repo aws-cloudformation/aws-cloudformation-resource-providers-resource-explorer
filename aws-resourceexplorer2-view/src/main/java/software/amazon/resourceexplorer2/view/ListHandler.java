@@ -9,9 +9,9 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 //Import Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.ListViewsRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ListViewsResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListViewsRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListViewsResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class ListHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public ListHandler() {
         client = ClientFactory.getClient();

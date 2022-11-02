@@ -9,13 +9,13 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
-import software.amazon.awssdk.services.resourceexplorer.model.DeleteIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceExplorerRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.DeleteIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceExplorer2Request;
 
 import static software.amazon.resourceexplorer2.index.IndexUtils.ACTIVE;
 import static software.amazon.resourceexplorer2.index.IndexUtils.AGGREGATOR;
@@ -99,7 +99,7 @@ public class DeleteHandlerTest {
         assertThat(response.getErrorCode()).isNull();
 
         // Verify that Resource Explorer request are invoked two times: GetIndexRequest and DeleteIndexRequest.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(DeleteIndexRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(DeleteIndexRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
 
     }

@@ -9,9 +9,9 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceNotFoundException;
 
 import static software.amazon.resourceexplorer2.index.TestConstants.INDEX_ARN_1;
 import static software.amazon.resourceexplorer2.index.IndexUtils.ACTIVE;
