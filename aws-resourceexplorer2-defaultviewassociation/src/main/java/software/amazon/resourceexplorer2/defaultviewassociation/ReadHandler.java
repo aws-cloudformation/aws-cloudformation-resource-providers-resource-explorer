@@ -10,14 +10,14 @@ import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 import software.amazon.cloudformation.proxy.HandlerErrorCode;
 
 //Import Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewResponse;
 
 
 public class ReadHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public ReadHandler() {
         client = ClientFactory.getClient();

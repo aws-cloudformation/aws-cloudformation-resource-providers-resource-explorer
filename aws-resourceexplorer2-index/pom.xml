@@ -23,8 +23,8 @@
 
         <!-- Package for Resource Explorer Java Client -->
         <dependency>
-            <groupId>software.amazon.resourceExplorer</groupId>
-            <artifactId>AwsJavaSdk-ResourceExplorer-2.0</artifactId>
+            <groupId>software.amazon.awssdk.services.resourceexplorer2</groupId>
+            <artifactId>AwsJavaSdk-ResourceExplorer2-2.0</artifactId>
             <version>1.0</version>
         </dependency>
 

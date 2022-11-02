@@ -10,10 +10,10 @@ import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 import software.amazon.cloudformation.proxy.HandlerErrorCode;
 
 //Import Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.TagResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UntagResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.TagResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UntagResourceRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class UpdateHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public UpdateHandler() {
         client = ClientFactory.getClient();
@@ -114,12 +114,12 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
 
     private UpdateViewRequest translateToUpdateViewRequest (ResourceModel model){
 
-        List<software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty>
+        List<software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty>
                 thisIncludedProperties = new ArrayList<>();
 
         if (model.getIncludedProperties() != null) {
             for (IncludedProperty modelIncludedProperty: model.getIncludedProperties()) {
-                software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty thisIncludedProperty = software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty.builder()
+                software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty thisIncludedProperty = software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty.builder()
                         .name(modelIncludedProperty.getName())
                         .build();
                 thisIncludedProperties.add(thisIncludedProperty);
@@ -132,7 +132,7 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
                     .includedProperties(thisIncludedProperties)
                     .build();
         }
-        software.amazon.awssdk.services.resourceexplorer.model.SearchFilter thisSearchFilter = software.amazon.awssdk.services.resourceexplorer.model.SearchFilter.builder()
+        software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter thisSearchFilter = software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter.builder()
                 .filterString(model.getFilters().getFilterString())
                 .build();
 

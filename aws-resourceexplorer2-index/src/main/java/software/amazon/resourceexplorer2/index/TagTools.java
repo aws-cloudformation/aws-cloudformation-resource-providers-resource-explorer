@@ -1,14 +1,14 @@
 package software.amazon.resourceexplorer2.index;
 
 // CloudFormation package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
 import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.ListTagsForResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ListTagsForResourceResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListTagsForResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ListTagsForResourceResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +54,7 @@ public class TagTools {
     }
 
     // Get a list of tags of an index with ListTagsForResource
-    public static Map<String, String> listTagsForIndex (ResourceExplorerClient client,
+    public static Map<String, String> listTagsForIndex (ResourceExplorer2Client client,
                                                         AmazonWebServicesClientProxy proxy,
                                                         Logger logger, String IndexArn){
         Map<String, String> result = new HashMap<String, String>();

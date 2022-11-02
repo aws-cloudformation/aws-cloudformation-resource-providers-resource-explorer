@@ -1,7 +1,7 @@
 package software.amazon.resourceexplorer2.defaultviewassociation;
 
 //CloudFormation package
-import software.amazon.awssdk.services.resourceexplorer.model.*;
+import software.amazon.awssdk.services.resourceexplorer2.model.*;
 import software.amazon.cloudformation.proxy.AmazonWebServicesClientProxy;
 import software.amazon.cloudformation.proxy.Logger;
 import software.amazon.cloudformation.proxy.ProgressEvent;

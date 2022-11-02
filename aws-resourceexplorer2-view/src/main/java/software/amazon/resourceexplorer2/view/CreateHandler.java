@@ -11,9 +11,9 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.CreateViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.CreateViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.CreateViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.CreateViewResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class CreateHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public CreateHandler() {
         client = ClientFactory.getClient();
@@ -73,12 +73,12 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
     private CreateViewRequest translateToCreateViewRequest
             (ResourceModel model, Logger logger, final ResourceHandlerRequest<ResourceModel> request){
 
-        List <software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty>
+        List <software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty>
                 thisIncludedProperties = new ArrayList<>();
 
         if (model.getIncludedProperties() != null) {
             for (IncludedProperty modelIncludedProperty: model.getIncludedProperties()) {
-                software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty thisIncludedProperty = software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty.builder()
+                software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty thisIncludedProperty = software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty.builder()
                         .name(modelIncludedProperty.getName())
                         .build();
                 thisIncludedProperties.add(thisIncludedProperty);
@@ -93,7 +93,7 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
                     .clientToken(request.getClientRequestToken())
                     .build();
         }
-        software.amazon.awssdk.services.resourceexplorer.model.SearchFilter thisSearchFilter = software.amazon.awssdk.services.resourceexplorer.model.SearchFilter.builder()
+        software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter thisSearchFilter = software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter.builder()
                 .filterString(model.getFilters().getFilterString())
                 .build();
 

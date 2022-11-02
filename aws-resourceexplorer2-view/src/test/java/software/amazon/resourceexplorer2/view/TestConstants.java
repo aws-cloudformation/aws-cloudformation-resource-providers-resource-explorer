@@ -1,7 +1,7 @@
 package software.amazon.resourceexplorer2.view;
 
-import software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty;
-import software.amazon.awssdk.services.resourceexplorer.model.SearchFilter;
+import software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty;
+import software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class TestConstants {
         put("aws:cloudformation:stack-name", "UnitTesStack");
     }};
 
-    public static IncludedProperty CLIENT_INCLUDED_PROPERTY = software.amazon.awssdk.services.resourceexplorer.model.IncludedProperty.builder()
+    public static IncludedProperty CLIENT_INCLUDED_PROPERTY = software.amazon.awssdk.services.resourceexplorer2.model.IncludedProperty.builder()
             .name("tags")
             .build();
     public static List<IncludedProperty> CLIENT_INCLUDED_PROPERTY_LIST =

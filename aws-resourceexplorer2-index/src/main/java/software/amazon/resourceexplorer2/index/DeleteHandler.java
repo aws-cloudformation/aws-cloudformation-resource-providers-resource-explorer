@@ -8,18 +8,18 @@ import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 import software.amazon.cloudformation.proxy.HandlerErrorCode;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.DeleteIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeRequest;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.DeleteIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeRequest;
 
 import static software.amazon.resourceexplorer2.index.IndexUtils.*;
 
 
 public class DeleteHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public DeleteHandler() {
         client = ClientFactory.getClient();

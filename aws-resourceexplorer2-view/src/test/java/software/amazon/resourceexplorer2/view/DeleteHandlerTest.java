@@ -9,12 +9,12 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.DeleteViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceExplorerRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
-import software.amazon.awssdk.services.resourceexplorer.model.ValidationException;
+import software.amazon.awssdk.services.resourceexplorer2.model.DeleteViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceExplorer2Request;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ValidationException;
 
 import static software.amazon.resourceexplorer2.view.TestConstants.EXAMPLE_ARN;
 
@@ -74,7 +74,7 @@ public class DeleteHandlerTest {
         assertThat(response.getErrorCode()).isNull();
 
         // Capture the actual GetViewRequest and DeleteViewRequest inside Delete Handle
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(DeleteViewRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(DeleteViewRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
 
         GetViewRequest getViewRequest = (GetViewRequest) capturedRequest.getAllValues().get(0);

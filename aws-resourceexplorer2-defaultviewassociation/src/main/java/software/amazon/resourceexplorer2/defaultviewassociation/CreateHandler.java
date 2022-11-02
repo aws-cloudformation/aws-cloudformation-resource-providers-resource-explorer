@@ -11,16 +11,16 @@ import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 import software.amazon.cloudformation.proxy.HandlerErrorCode;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
-import software.amazon.awssdk.services.resourceexplorer.model.AssociateDefaultViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.AssociateDefaultViewResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetDefaultViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
+import software.amazon.awssdk.services.resourceexplorer2.model.AssociateDefaultViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.AssociateDefaultViewResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewResponse;
 
 
 public class CreateHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public CreateHandler() {
         client = ClientFactory.getClient();

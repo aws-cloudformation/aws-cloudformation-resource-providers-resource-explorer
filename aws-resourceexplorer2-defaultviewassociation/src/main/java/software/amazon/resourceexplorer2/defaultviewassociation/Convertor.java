@@ -4,11 +4,11 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.Logger;
 
 //Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
-import software.amazon.awssdk.services.resourceexplorer.model.InternalServerException;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceNotFoundException;
-import software.amazon.awssdk.services.resourceexplorer.model.ThrottlingException;
-import software.amazon.awssdk.services.resourceexplorer.model.ValidationException;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.InternalServerException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceNotFoundException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ThrottlingException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ValidationException;
 
 public class Convertor {
     static HandlerErrorCode convertExceptionToErrorCode(Exception e, Logger logger){

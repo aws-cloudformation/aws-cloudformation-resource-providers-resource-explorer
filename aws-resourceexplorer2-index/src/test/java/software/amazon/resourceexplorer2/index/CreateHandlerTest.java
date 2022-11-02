@@ -9,17 +9,17 @@ import software.amazon.cloudformation.proxy.HandlerErrorCode;
 import software.amazon.cloudformation.proxy.OperationStatus;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.CreateIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.CreateIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.DeleteIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.AccessDeniedException;
-import software.amazon.awssdk.services.resourceexplorer.model.InternalServerException;
-import software.amazon.awssdk.services.resourceexplorer.model.ConflictException;
-import software.amazon.awssdk.services.resourceexplorer.model.ResourceExplorerRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.CreateIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.CreateIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.DeleteIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.AccessDeniedException;
+import software.amazon.awssdk.services.resourceexplorer2.model.InternalServerException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ConflictException;
+import software.amazon.awssdk.services.resourceexplorer2.model.ResourceExplorer2Request;
 
 // Necessary Constants for testing
 import static software.amazon.resourceexplorer2.index.IndexUtils.DELAY_CONSTANT;
@@ -200,14 +200,14 @@ public class CreateHandlerTest {
 
         // Capture the actual CreateIndexRequest, GetIndexRequest, UpdateIndexTypeRequest
         // and ListTagsForResource in the process.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
+        List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
-        CreateIndexRequest invokedCreateIndexRequest = (CreateIndexRequest) invokedResourceExplorerRequest.get(0);
+        CreateIndexRequest invokedCreateIndexRequest = (CreateIndexRequest) invokedResourceExplorer2Request.get(0);
         assertThat(invokedCreateIndexRequest.tags()).isEqualTo(EMPTY_TAGS);
 
-        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
+        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorer2Request.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(INDEX_ARN_1);
         assertThat(invokedUpdateIndexTypeRequest.typeAsString()).isEqualTo(AGGREGATOR);
 
@@ -322,14 +322,14 @@ public class CreateHandlerTest {
 
         // Capture the actual CreateIndexRequest, GetIndexRequest, UpdateIndexTypeRequest
         // and ListTagsForResource in the process.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(2)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
+        List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
-        GetIndexRequest invokedGetIndexRequest = (GetIndexRequest) invokedResourceExplorerRequest.get(0);
+        GetIndexRequest invokedGetIndexRequest = (GetIndexRequest) invokedResourceExplorer2Request.get(0);
         assertThat(invokedGetIndexRequest).isEqualTo(getIndexRequest);
 
-        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
+        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorer2Request.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(INDEX_ARN_1);
         assertThat(invokedUpdateIndexTypeRequest.typeAsString()).isEqualTo(AGGREGATOR);
 
@@ -475,18 +475,18 @@ public class CreateHandlerTest {
 
         // Capture the actual CreateIndexRequest,UpdateIndexTypeRequest and DeleteIndexRequest
         // in the process.
-        ArgumentCaptor<ResourceExplorerRequest> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
+        ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
         verify(proxy, times(3)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
-        List<ResourceExplorerRequest> invokedResourceExplorerRequest = capturedRequest.getAllValues();
+        List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
-        CreateIndexRequest invokedCreateIndexRequest = (CreateIndexRequest) invokedResourceExplorerRequest.get(0);
+        CreateIndexRequest invokedCreateIndexRequest = (CreateIndexRequest) invokedResourceExplorer2Request.get(0);
         assertThat(invokedCreateIndexRequest.tags()).isEqualTo(EMPTY_TAGS);
 
-        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorerRequest.get(1);
+        UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorer2Request.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(INDEX_ARN_1);
         assertThat(invokedUpdateIndexTypeRequest.typeAsString()).isEqualTo(AGGREGATOR);
 
-        DeleteIndexRequest invokedDeleteIndexRequest = (DeleteIndexRequest) invokedResourceExplorerRequest.get(2);
+        DeleteIndexRequest invokedDeleteIndexRequest = (DeleteIndexRequest) invokedResourceExplorer2Request.get(2);
         assertThat(invokedDeleteIndexRequest.arn()).isEqualTo(INDEX_ARN_1);
     }
 

@@ -8,13 +8,13 @@ import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 import software.amazon.cloudformation.proxy.HandlerErrorCode;
 
 // Resource Explorer package
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.GetIndexResponse;
-import software.amazon.awssdk.services.resourceexplorer.model.TagResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UntagResourceRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeRequest;
-import software.amazon.awssdk.services.resourceexplorer.model.UpdateIndexTypeResponse;
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.GetIndexResponse;
+import software.amazon.awssdk.services.resourceexplorer2.model.TagResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UntagResourceRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeRequest;
+import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeResponse;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
 
 import static software.amazon.resourceexplorer2.index.IndexUtils.DELAY_CONSTANT;
 import static software.amazon.resourceexplorer2.index.IndexUtils.MAX_RETRIES;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 public class UpdateHandler extends BaseHandler<CallbackContext> {
 
-    private final ResourceExplorerClient client;
+    private final ResourceExplorer2Client client;
 
     public UpdateHandler() {
         client = ClientFactory.getClient();

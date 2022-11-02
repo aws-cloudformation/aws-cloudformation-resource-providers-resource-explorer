@@ -1,6 +1,6 @@
 package software.amazon.resourceexplorer2.defaultviewassociation;
 
-import software.amazon.awssdk.services.resourceexplorer.ResourceExplorerClient;
+import software.amazon.awssdk.services.resourceexplorer2.ResourceExplorer2Client;
 
 import com.amazonaws.util.StringUtils;
 
@@ -13,12 +13,12 @@ public class ClientFactory {
     private static final String AWS_REGION = "AWS_REGION";
     private static final String DEFAULT_AWS_REGION = "us-west-2";
 
-    private static ResourceExplorerClient client;
+    private static ResourceExplorer2Client client;
 
-    public static ResourceExplorerClient getClient() {
+    public static ResourceExplorer2Client getClient() {
 
         if(client == null) {
-            client = ResourceExplorerClient.builder()
+            client = ResourceExplorer2Client.builder()
                     .endpointOverride(URI.create(String.format("https://resource-explorer-2.%s.api.aws", getRegion())))
                     .region(Region.of(getRegion()))
                     .build();
