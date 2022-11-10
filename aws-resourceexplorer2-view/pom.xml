@@ -22,9 +22,9 @@
     <dependencies>
         <!-- Package for Resource Explorer Java Client -->
         <dependency>
-            <groupId>software.amazon.awssdk.services.resourceexplorer2</groupId>
-            <artifactId>AwsJavaSdk-ResourceExplorer2-2.0</artifactId>
-            <version>1.0</version>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>resourceexplorer2</artifactId>
+            <version>2.18.14</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/software.amazon.cloudformation/aws-cloudformation-rpdk-java-plugin -->
