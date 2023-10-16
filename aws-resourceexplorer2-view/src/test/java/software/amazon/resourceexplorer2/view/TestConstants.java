@@ -56,8 +56,8 @@ public class TestConstants {
                 add(MODEL_INCLUDED_PROPERTY);
             }};
 
-    public static software.amazon.resourceexplorer2.view.Filters MODEL_FILTERS =
-            software.amazon.resourceexplorer2.view.Filters.builder()
+    public static software.amazon.resourceexplorer2.view.SearchFilter MODEL_FILTERS =
+            software.amazon.resourceexplorer2.view.SearchFilter.builder()
                     .filterString("Service:s3 Region:us-west-2")
                     .build();
 }

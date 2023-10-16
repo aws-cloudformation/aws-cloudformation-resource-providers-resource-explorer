@@ -55,8 +55,8 @@ public class UpdateHandlerTest {
 
     @Spy
     private UpdateHandler handler;
-    private static Filters thisFilters = new Filters("Service:s3 Region:us-west-2");
-    private static Filters newFilters = new Filters("Service:s3 Region:us-east-1");
+    private static SearchFilter thisFilters = new SearchFilter("Service:s3 Region:us-west-2");
+    private static SearchFilter newFilters = new SearchFilter("Service:s3 Region:us-east-1");
 
     @BeforeEach
     public void setup() {

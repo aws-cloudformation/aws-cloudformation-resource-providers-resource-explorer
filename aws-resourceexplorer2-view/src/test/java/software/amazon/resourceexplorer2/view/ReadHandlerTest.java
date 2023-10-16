@@ -43,6 +43,8 @@ import java.util.Map;
 @ExtendWith(MockitoExtension.class)
 public class ReadHandlerTest {
 
+    private static final String ORG_STRING = "arn:aws:organizations::123456789012:organization/o-58teqkmmtv";
+
     @Mock
     private AmazonWebServicesClientProxy proxy;
 
@@ -74,6 +76,7 @@ public class ReadHandlerTest {
                         .viewArn(EXAMPLE_ARN)
                         .includedProperties(CLIENT_INCLUDED_PROPERTY_LIST)
                         .filters(CLIENT_SEARCH_FILTER)
+                        .scope(ORG_STRING)
                         .build())
                 .tags(tags)
                 .build();
@@ -86,6 +89,7 @@ public class ReadHandlerTest {
                 .viewName(VIEW_NAME)
                 .filters(MODEL_FILTERS)
                 .includedProperties(MODEL_INCLUDED_PROPERTY_LIST)
+                .scope(ORG_STRING)
                 .tags(tags)
                 .build();
 

@@ -47,6 +47,9 @@ import java.util.HashMap;
 @ExtendWith(MockitoExtension.class)
 public class CreateHandlerTest {
 
+    private static final String ACCOUNT_SCOPE = "arn:aws:iam::123456789012:root";
+    private static final String ORG_SCOPE = "arn:aws:organizations::123456789012:organization/o-58teqkmmtv";
+
     @Mock
     private AmazonWebServicesClientProxy proxy;
 
@@ -70,6 +73,74 @@ public class CreateHandlerTest {
                         .viewArn(EXAMPLE_ARN)
                         .includedProperties(CLIENT_INCLUDED_PROPERTY_LIST)
                         .filters(CLIENT_SEARCH_FILTER)
+                        .scope(ACCOUNT_SCOPE)
+                        .build())
+                .build();
+
+        when(proxy.injectCredentialsAndInvokeV2( any(), any()))
+                .thenReturn(createViewResponse);
+
+        //build Resource Model for the CREATE handler
+        final ResourceModel inputModel = ResourceModel.builder()
+                .viewName(VIEW_NAME)
+                .includedProperties(MODEL_INCLUDED_PROPERTY_LIST)
+                .filters(MODEL_FILTERS)
+                .tags(RESOURCE_TAGS)
+                .build();
+
+        final ResourceModel outputModel = ResourceModel.builder()
+                .viewArn(EXAMPLE_ARN)
+                .viewName(VIEW_NAME)
+                .includedProperties(MODEL_INCLUDED_PROPERTY_LIST)
+                .filters(MODEL_FILTERS)
+                .scope(ACCOUNT_SCOPE)
+                .tags(RESOURCE_TAGS)
+                .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .desiredResourceState(inputModel)
+                .desiredResourceTags(STACK_LEVEL_TAGS)
+                .systemTags(SYSTEM_TAGS)
+                .build();
+
+        final ProgressEvent<ResourceModel, CallbackContext> response
+                = handler.handleRequest(proxy, request, null, logger);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
+        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
+        assertThat(response.getResourceModel()).isEqualTo(outputModel);
+        assertThat(response.getResourceModels()).isNull();
+        assertThat(response.getMessage()).isNull();
+        assertThat(response.getErrorCode()).isNull();
+
+        //Capture the actual CreateViewRequest inside the Create Handler
+        ArgumentCaptor<CreateViewRequest> capturedRequest = ArgumentCaptor.forClass(CreateViewRequest.class);
+        verify(proxy).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
+        CreateViewRequest capturedRequestValue = capturedRequest.getValue();
+        assertEquals(VIEW_NAME, capturedRequestValue.viewName());
+        assertEquals(MODEL_FILTERS.getFilterString(), capturedRequestValue.filters().filterString());
+        assertEquals(MODEL_INCLUDED_PROPERTY_LIST.get(0).getName(),
+                capturedRequestValue.includedProperties().get(0).name());
+
+        // Verify that response's tags includes all types of tags
+        Map<String, String> expectedTags = new HashMap<String, String>();
+        expectedTags.putAll(RESOURCE_TAGS);
+        expectedTags.putAll(STACK_LEVEL_TAGS);
+
+        assertThat(capturedRequestValue.tags()).containsExactlyEntriesOf(expectedTags);
+
+    }
+
+    @Test
+    public void handleRequest_SimpleCreateSuccess_WithScope() {
+
+        CreateViewResponse createViewResponse = CreateViewResponse.builder()
+                .view( View.builder()
+                        .viewArn(EXAMPLE_ARN)
+                        .includedProperties(CLIENT_INCLUDED_PROPERTY_LIST)
+                        .filters(CLIENT_SEARCH_FILTER)
                         .build())
                 .build();
 
@@ -81,6 +152,7 @@ public class CreateHandlerTest {
                 .viewName(VIEW_NAME)
                 .includedProperties(MODEL_INCLUDED_PROPERTY_LIST)
                 .filters(MODEL_FILTERS)
+                .scope(ORG_SCOPE)
                 .tags(RESOURCE_TAGS)
                 .build();
 
