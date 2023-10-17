@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class UpdateHandler extends BaseHandler<CallbackContext> {
+public class UpdateHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
 
@@ -36,6 +36,8 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
             ResourceHandlerRequest<ResourceModel> request,
             CallbackContext callbackContext,
             Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel desiredModel = request.getDesiredResourceState();
 

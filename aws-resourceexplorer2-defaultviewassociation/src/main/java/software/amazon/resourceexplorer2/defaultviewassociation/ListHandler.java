@@ -11,7 +11,7 @@ import java.util.List;
 
 // NOTE: LIST handler is not used here
 // but the implementation is kept in case we want to support in the future.
-public class ListHandler extends BaseHandler<CallbackContext> {
+public class ListHandler extends REBaseHandler<CallbackContext> {
 
     @Override
     public ProgressEvent<ResourceModel, CallbackContext> handleRequest(
@@ -19,6 +19,8 @@ public class ListHandler extends BaseHandler<CallbackContext> {
         final ResourceHandlerRequest<ResourceModel> request,
         final CallbackContext callbackContext,
         final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final List<ResourceModel> models = new ArrayList<>();
 

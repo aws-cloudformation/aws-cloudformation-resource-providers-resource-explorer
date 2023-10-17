@@ -30,19 +30,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class UpdateHandler extends BaseHandler<CallbackContext> {
+public class UpdateHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
 
     public UpdateHandler() {
         client = ClientFactory.getClient();
     }
+    
     @Override
     public ProgressEvent<ResourceModel, CallbackContext> handleRequest(
             final AmazonWebServicesClientProxy proxy,
             final ResourceHandlerRequest<ResourceModel> request,
             CallbackContext callbackContext,
             final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
 

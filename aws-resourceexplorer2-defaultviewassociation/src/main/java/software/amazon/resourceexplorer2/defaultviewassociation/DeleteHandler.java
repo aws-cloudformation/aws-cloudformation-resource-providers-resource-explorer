@@ -17,7 +17,7 @@ import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewReq
 import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewResponse;
 
 
-public class DeleteHandler extends BaseHandler<CallbackContext> {
+public class DeleteHandler extends REBaseHandler<CallbackContext> {
     private final ResourceExplorer2Client client;
     public DeleteHandler() {
         client = ClientFactory.getClient();
@@ -29,6 +29,8 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
             final ResourceHandlerRequest<ResourceModel> request,
             final CallbackContext callbackContext,
             final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
 

@@ -17,7 +17,7 @@ import software.amazon.awssdk.services.resourceexplorer2.model.UpdateIndexTypeRe
 import static software.amazon.resourceexplorer2.index.IndexUtils.*;
 
 
-public class DeleteHandler extends BaseHandler<CallbackContext> {
+public class DeleteHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
 
@@ -31,6 +31,8 @@ public class DeleteHandler extends BaseHandler<CallbackContext> {
             final ResourceHandlerRequest<ResourceModel> request,
             final CallbackContext callbackContext,
             final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
 
