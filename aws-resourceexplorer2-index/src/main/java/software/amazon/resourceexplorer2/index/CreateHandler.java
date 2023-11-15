@@ -23,7 +23,7 @@ import static software.amazon.resourceexplorer2.index.IndexUtils.ACTIVE;
 import static software.amazon.resourceexplorer2.index.IndexUtils.AGGREGATOR;
 import static software.amazon.resourceexplorer2.index.IndexUtils.LOCAL;
 
-public class CreateHandler extends BaseHandler<CallbackContext> {
+public class CreateHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
 
@@ -37,6 +37,8 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
             final ResourceHandlerRequest<ResourceModel> request,
             final CallbackContext callbackContext,
             final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
 

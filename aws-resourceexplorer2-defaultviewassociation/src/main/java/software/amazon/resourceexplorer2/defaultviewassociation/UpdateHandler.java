@@ -14,7 +14,7 @@ import software.amazon.cloudformation.proxy.ProgressEvent;
 import software.amazon.cloudformation.proxy.OperationStatus;
 import software.amazon.cloudformation.proxy.ResourceHandlerRequest;
 
-public class UpdateHandler extends BaseHandler<CallbackContext> {
+public class UpdateHandler extends REBaseHandler<CallbackContext> {
     private final ResourceExplorer2Client client;
     public UpdateHandler() {
         client = ClientFactory.getClient();
@@ -26,6 +26,8 @@ public class UpdateHandler extends BaseHandler<CallbackContext> {
         final ResourceHandlerRequest<ResourceModel> request,
         final CallbackContext callbackContext,
         final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
 

@@ -18,7 +18,7 @@ import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewReq
 import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewResponse;
 
 
-public class CreateHandler extends BaseHandler<CallbackContext> {
+public class CreateHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
 
@@ -32,6 +32,8 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
             final ResourceHandlerRequest<ResourceModel> request,
             final CallbackContext callbackContext,
             final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
 

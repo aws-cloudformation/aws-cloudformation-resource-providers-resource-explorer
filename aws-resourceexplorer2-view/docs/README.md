@@ -12,8 +12,9 @@ To declare this entity in your AWS CloudFormation template, use the following sy
 {
     "Type" : "AWS::ResourceExplorer2::View",
     "Properties" : {
+        "<a href="#filters" title="Filters">Filters</a>" : <i><a href="searchfilter.md">SearchFilter</a></i>,
         "<a href="#includedproperties" title="IncludedProperties">IncludedProperties</a>" : <i>[ <a href="includedproperty.md">IncludedProperty</a>, ... ]</i>,
-        "<a href="#filters" title="Filters">Filters</a>" : <i><a href="filters.md">Filters</a></i>,
+        "<a href="#scope" title="Scope">Scope</a>" : <i>String</i>,
         "<a href="#tags" title="Tags">Tags</a>" : <i><a href="tags.md">Tags</a></i>,
         "<a href="#viewname" title="ViewName">ViewName</a>" : <i>String</i>
     }
@@ -25,14 +26,23 @@ To declare this entity in your AWS CloudFormation template, use the following sy
 <pre>
 Type: AWS::ResourceExplorer2::View
 Properties:
+    <a href="#filters" title="Filters">Filters</a>: <i><a href="searchfilter.md">SearchFilter</a></i>
     <a href="#includedproperties" title="IncludedProperties">IncludedProperties</a>: <i>
       - <a href="includedproperty.md">IncludedProperty</a></i>
-    <a href="#filters" title="Filters">Filters</a>: <i><a href="filters.md">Filters</a></i>
+    <a href="#scope" title="Scope">Scope</a>: <i>String</i>
     <a href="#tags" title="Tags">Tags</a>: <i><a href="tags.md">Tags</a></i>
     <a href="#viewname" title="ViewName">ViewName</a>: <i>String</i>
 </pre>
 
 ## Properties
+
+#### Filters
+
+_Required_: No
+
+_Type_: <a href="searchfilter.md">SearchFilter</a>
+
+_Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
 
 #### IncludedProperties
 
@@ -42,13 +52,13 @@ _Type_: List of <a href="includedproperty.md">IncludedProperty</a>
 
 _Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
 
-#### Filters
+#### Scope
 
 _Required_: No
 
-_Type_: <a href="filters.md">Filters</a>
+_Type_: String
 
-_Update requires_: [No interruption](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-no-interrupt)
+_Update requires_: [Replacement](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-update-behaviors.html#update-replacement)
 
 #### Tags
 

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CreateHandler extends BaseHandler<CallbackContext> {
+public class CreateHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
 
@@ -33,6 +33,8 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
             final ResourceHandlerRequest<ResourceModel> request,
             final CallbackContext callbackContext,
             final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
 
@@ -62,6 +64,7 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
 
         model.setViewArn(createViewResponse.view().viewArn());
         model.setViewName(model.getViewName());
+        model.setScope(createViewResponse.view().scope());
 
         return ProgressEvent.<ResourceModel, CallbackContext>builder()
                 .resourceModel(model)
@@ -85,24 +88,24 @@ public class CreateHandler extends BaseHandler<CallbackContext> {
             }
         }
 
-        if (model.getFilters() == null){
-            return CreateViewRequest.builder()
+        CreateViewRequest.Builder createViewRequestBuilder = CreateViewRequest.builder()
                     .tags(TagTools.combineAllTypesOfTags(model, request, logger))
                     .viewName(model.getViewName())
                     .includedProperties(thisIncludedProperties)
-                    .clientToken(request.getClientRequestToken())
-                    .build();
-        }
-        software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter thisSearchFilter = software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter.builder()
-                .filterString(model.getFilters().getFilterString())
-                .build();
+                    .clientToken(request.getClientRequestToken());
 
-        return CreateViewRequest.builder()
-                .tags(TagTools.combineAllTypesOfTags(model, request, logger))
-                .viewName(model.getViewName())
-                .includedProperties(thisIncludedProperties)
-                .filters(thisSearchFilter)
-                .clientToken(request.getClientRequestToken())
-                .build();
+        if (model.getFilters() != null){
+            software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter thisSearchFilter = software.amazon.awssdk.services.resourceexplorer2.model.SearchFilter.builder()
+                    .filterString(model.getFilters().getFilterString())
+                    .build();
+
+            createViewRequestBuilder = createViewRequestBuilder.filters(thisSearchFilter);
+        }
+
+        if (model.getScope() != null){
+            createViewRequestBuilder = createViewRequestBuilder.scope(model.getScope());
+        }
+
+        return createViewRequestBuilder.build();
     }
 }

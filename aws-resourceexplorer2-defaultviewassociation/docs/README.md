@@ -50,3 +50,4 @@ For more information about using the `Fn::GetAtt` intrinsic function, see [Fn::G
 #### AssociatedAwsPrincipal
 
 The AWS principal that the default view is associated with, used as the unique identifier for this resource.
+

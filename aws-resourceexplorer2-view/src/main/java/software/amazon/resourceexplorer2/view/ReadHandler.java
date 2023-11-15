@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ReadHandler extends BaseHandler<CallbackContext> {
+public class ReadHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
 
@@ -32,6 +32,8 @@ public class ReadHandler extends BaseHandler<CallbackContext> {
             final CallbackContext callbackContext,
             final Logger logger) {
 
+        logRequestInfo(request, logger);
+
         final ResourceModel model = request.getDesiredResourceState();
 
         GetViewRequest getViewRequest = GetViewRequest.builder()
@@ -39,7 +41,7 @@ public class ReadHandler extends BaseHandler<CallbackContext> {
                 .build();
         GetViewResponse getViewResponse;
         try {
-            getViewResponse= proxy.injectCredentialsAndInvokeV2(getViewRequest, client::getView);
+            getViewResponse = proxy.injectCredentialsAndInvokeV2(getViewRequest, client::getView);
 
         } catch (RuntimeException e){
             HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
@@ -67,19 +69,20 @@ public class ReadHandler extends BaseHandler<CallbackContext> {
             }
         }
 
-        Filters thisFilters = Filters.builder().filterString("").build();
+        SearchFilter thisSearchFilter = SearchFilter.builder().filterString("").build();
         if (getViewResponse.view().filters().filterString() != null){
-            thisFilters.setFilterString(getViewResponse.view().filters().filterString());
+            thisSearchFilter.setFilterString(getViewResponse.view().filters().filterString());
         }
 
-        String[] viewArnSplit = getViewResponse.view().viewArn().split("/", -2);
-        String viewName = viewArnSplit[1];
+        final String[] viewArnSplit = getViewResponse.view().viewArn().split("/", -2);
+        final String viewName = viewArnSplit[1];
 
         ResourceModel resultModel = ResourceModel.builder()
                 .viewName(viewName)
                 .viewArn(getViewResponse.view().viewArn())
                 .includedProperties(modelIncludedProperties)
-                .filters(thisFilters)
+                .filters(thisSearchFilter)
+                .scope(getViewResponse.view().scope())
                 .tags(getViewResponse.tags())
                 .build();
 

@@ -9,6 +9,7 @@
         "Filters": {
             "FilterString": "Service:s3 Region:us-east-1"
         },
+        "Scope": "arn:{{partition}}:iam::{{account}}:root",
         "Tags": {
             "Purpose": "Contract Test 2",
             "Temporary": "Yes"

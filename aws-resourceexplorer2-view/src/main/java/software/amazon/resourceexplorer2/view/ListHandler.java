@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class ListHandler extends BaseHandler<CallbackContext> {
+public class ListHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
 
@@ -32,6 +32,8 @@ public class ListHandler extends BaseHandler<CallbackContext> {
             final ResourceHandlerRequest<ResourceModel> request,
             final CallbackContext callbackContext,
             final Logger logger) {
+
+        logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
         List<ResourceModel> models = new ArrayList<>();
