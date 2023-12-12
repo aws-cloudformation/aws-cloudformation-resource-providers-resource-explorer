@@ -39,6 +39,10 @@ Resources:
                 - "resource-explorer-2:UntagResource"
                 - "resource-explorer-2:UpdateIndexType"
                 Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "iam:CreateServiceLinkedRole"
+                Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/aws-service-role/resource-explorer-2.amazonaws.com/AWSServiceRoleForResourceExplorer"
 Outputs:
   ExecutionRoleArn:
     Value:
