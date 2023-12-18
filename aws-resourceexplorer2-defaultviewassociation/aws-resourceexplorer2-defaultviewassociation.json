@@ -27,7 +27,8 @@
         "create": {
             "permissions": [
                 "resource-explorer-2:GetDefaultView",
-                "resource-explorer-2:AssociateDefaultView"
+                "resource-explorer-2:AssociateDefaultView",
+                "iam:CreateServiceLinkedRole"
             ]
         },
         "update": {

@@ -81,7 +81,8 @@
         "create": {
             "permissions": [
                 "resource-explorer-2:CreateView",
-                "resource-explorer-2:TagResource"
+                "resource-explorer-2:TagResource",
+                "iam:CreateServiceLinkedRole"
             ]
         },
         "read": {
