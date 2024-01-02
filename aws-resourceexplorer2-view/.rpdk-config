@@ -2,7 +2,7 @@
     "artifact_type": "RESOURCE",
     "typeName": "AWS::ResourceExplorer2::View",
     "language": "java",
-    "runtime": "java8",
+    "runtime": "java11",
     "entrypoint": "software.amazon.resourceexplorer2.view.HandlerWrapper::handleRequest",
     "testEntrypoint": "software.amazon.resourceexplorer2.view.HandlerWrapper::testEntrypoint",
     "settings": {

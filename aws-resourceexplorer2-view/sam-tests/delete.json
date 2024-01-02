@@ -1,5 +1,4 @@
 {
-    "resource": "/{proxy+}",
     "credentials": {},
     "action": "DELETE",
     "MemorySize": "1024",

@@ -1,5 +1,4 @@
 {
-    "resource": "/{proxy+}",
     "credentials": {},
     "action": "LIST",
     "MemorySize": "1024",

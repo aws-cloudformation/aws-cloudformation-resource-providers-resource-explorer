@@ -1,5 +1,5 @@
 {
-    "resource": "/{proxy+}",
+    "credentials": {},
     "action": "READ",
     "MemorySize": "1024",
     "request": {
