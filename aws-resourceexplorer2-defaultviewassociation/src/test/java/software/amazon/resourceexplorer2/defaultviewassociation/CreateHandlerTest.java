@@ -88,8 +88,9 @@ public class CreateHandlerTest {
                 = handler.handleRequest(proxy, request, context, logger);
 
         assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
-        assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.IN_PROGRESS);
+        assertThat(response.getCallbackContext()).isNotNull();
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(30);
         assertThat(response.getResourceModel()).isEqualTo(model.toBuilder().associatedAwsPrincipal(ACCOUNT_ID).build());
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
@@ -130,6 +131,37 @@ public class CreateHandlerTest {
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AlreadyExists);
+    }
+
+    @Test
+    public void handleRequest_callbackContextIsSet() {
+
+        GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
+
+        GetDefaultViewResponse getDefaultViewResponse = GetDefaultViewResponse.builder()
+                .viewArn(exampleArn1)
+                .build();
+
+        when(proxy.injectCredentialsAndInvokeV2(eq(getDefaultViewRequest), any()))
+                .thenReturn(getDefaultViewResponse);
+
+        final ResourceModel model = ResourceModel.builder()
+                .viewArn(exampleArn1)
+                .build();
+
+        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                .desiredResourceState(model)
+                .awsAccountId(ACCOUNT_ID)
+                .build();
+        CallbackContext callbackContext = new CallbackContext();
+        callbackContext.preExistenceCheck  = true;
+        final ProgressEvent<ResourceModel, CallbackContext> response
+                = handler.handleRequest(proxy, request, callbackContext, logger);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
+        assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
+        assertThat(response.getResourceModels()).isNull();
     }
 
     // This test verifies the failed status of setting up the same default view already associated.
