@@ -50,10 +50,17 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
 
         logger.log(String.format("[CREATE] Default view arn: " + getDefaultViewResponse.viewArn()));
 
+        String viewArnFromResponse = getDefaultViewResponse.viewArn();
         // If a default view exists, and it is the desired default view, return AlreadyExist Error.
-        if (getDefaultViewResponse.viewArn() != null){
-            logger.log(String.format("[CREATE] A default view is already associated."));
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
+        if (viewArnFromResponse != null) {
+            if (callbackContext != null && callbackContext.preExistenceCheck && viewArnFromResponse.equals(model.getViewArn())) {
+                logger.log(String.format("[CREATE] A default view is already associated but not reporting failure as this is a CREATE retry."));
+            } else {
+                logger.log(String.format("[CREATE] A default view is already associated."));
+                return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
+            }
+        } else {
+            callbackContext.preExistenceCheck = true;
         }
 
         AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
