@@ -86,7 +86,7 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
                 .resourceModel(model)
                 .status(OperationStatus.IN_PROGRESS)
                 .callbackContext(callbackContext)
-                .callbackDelaySeconds(30)
+                .callbackDelaySeconds(5)
                 .build();
     }
 }

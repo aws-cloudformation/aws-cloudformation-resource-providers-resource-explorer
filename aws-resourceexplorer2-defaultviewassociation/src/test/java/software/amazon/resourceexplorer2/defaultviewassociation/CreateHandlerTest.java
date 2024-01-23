@@ -53,7 +53,7 @@ public class CreateHandlerTest {
     // This test verifies the success status of setting up a default view while there is
     // no existed default view in an account.
     @Test
-    public void handleRequest_NonExistedDefaultView_Success() {
+    public void handleRequest_NonExistedDefaultView_Results_InProgress() {
 
         GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
 
