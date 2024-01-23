@@ -90,7 +90,7 @@ public class CreateHandlerTest {
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.IN_PROGRESS);
         assertThat(response.getCallbackContext()).isNotNull();
-        assertThat(response.getCallbackDelaySeconds()).isEqualTo(30);
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(5);
         assertThat(response.getResourceModel()).isEqualTo(model.toBuilder().associatedAwsPrincipal(ACCOUNT_ID).build());
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
