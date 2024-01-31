@@ -21,7 +21,6 @@ import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewRes
 public class CreateHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
-    private final int MAX_RETRIES = 3;
 
     public CreateHandler() {
         client = ClientFactory.getClient();
