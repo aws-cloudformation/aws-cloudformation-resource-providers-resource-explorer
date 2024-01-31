@@ -124,15 +124,6 @@ public class CreateHandlerTest {
     @Test
     public void handleRequest_callbackContextIsSet() {
 
-        GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
-
-        GetDefaultViewResponse getDefaultViewResponse = GetDefaultViewResponse.builder()
-                .viewArn(exampleArn1)
-                .build();
-
-        when(proxy.injectCredentialsAndInvokeV2(eq(getDefaultViewRequest), any()))
-                .thenReturn(getDefaultViewResponse);
-
         final ResourceModel model = ResourceModel.builder()
                 .viewArn(exampleArn1)
                 .build();
@@ -248,13 +239,6 @@ public class CreateHandlerTest {
     // This test throws InternalServerException when it invokes AssociateDefaultView.
     @Test
     public void handleRequest_throwInternalServerException() {
-
-        GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
-
-        GetDefaultViewResponse getDefaultViewResponse = GetDefaultViewResponse.builder().build();
-
-        when(proxy.injectCredentialsAndInvokeV2(eq(getDefaultViewRequest), any()))
-                .thenReturn(getDefaultViewResponse);
 
         AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
                 .viewArn(exampleArn1)

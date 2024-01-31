@@ -21,6 +21,7 @@ import software.amazon.awssdk.services.resourceexplorer2.model.GetDefaultViewRes
 public class CreateHandler extends REBaseHandler<CallbackContext> {
 
     private final ResourceExplorer2Client client;
+    private final int MAX_RETRIES = 3;
 
     public CreateHandler() {
         client = ClientFactory.getClient();
@@ -36,21 +37,6 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
         logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
-
-        // We need to check if there already exists a default view by using GetDefaultView operation.
-        GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
-        GetDefaultViewResponse getDefaultViewResponse;
-        try {
-            getDefaultViewResponse = proxy.injectCredentialsAndInvokeV2( getDefaultViewRequest, client::getDefaultView );
-        } catch (Exception e){
-            logger.log(String.format("[CREATE] Error occurred in GetDefaultView."));
-            HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not check default view: " + e.getMessage());
-        }
-
-        logger.log(String.format("[CREATE] Default view arn: " + getDefaultViewResponse.viewArn()));
-
-        String viewArnFromResponse = getDefaultViewResponse.viewArn();
 
         if (callbackContext != null && callbackContext.preExistenceCheck) {
             // ADV API doesn't fail even if a view is already associated as default
@@ -72,17 +58,34 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
                         .resourceModel(model)
                         .status(OperationStatus.SUCCESS)
                         .build();
-        } else if (viewArnFromResponse == null) {
-            callbackContext.preExistenceCheck = true;
-            return ProgressEvent.<ResourceModel, CallbackContext>builder()
-                .resourceModel(model)
-                .status(OperationStatus.IN_PROGRESS)
-                .callbackContext(callbackContext)
-                .callbackDelaySeconds(5)
-                .build();
         } else {
-            logger.log(String.format("[CREATE] A default view is already associated."));
-            return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
+            // We need to check if there already exists a default view by using GetDefaultView operation.
+            GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
+            GetDefaultViewResponse getDefaultViewResponse;
+            try {
+                getDefaultViewResponse = proxy.injectCredentialsAndInvokeV2( getDefaultViewRequest, client::getDefaultView );
+            } catch (Exception e){
+                logger.log(String.format("[CREATE] Error occurred in GetDefaultView."));
+                HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
+                return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not check default view: " + e.getMessage());
+            }
+
+            logger.log(String.format("[CREATE] Default view arn: " + getDefaultViewResponse.viewArn()));
+
+            String viewArnFromResponse = getDefaultViewResponse.viewArn();
+
+            if (viewArnFromResponse == null) {
+                callbackContext.preExistenceCheck = true;
+                return ProgressEvent.<ResourceModel, CallbackContext>builder()
+                    .resourceModel(model)
+                    .status(OperationStatus.IN_PROGRESS)
+                    .callbackContext(callbackContext)
+                    .callbackDelaySeconds(5)
+                    .build();
+            } else {
+                logger.log(String.format("[CREATE] A default view is already associated."));
+                return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
+            }
         }
     }
 }
