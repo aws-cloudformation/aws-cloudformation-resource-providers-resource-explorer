@@ -62,17 +62,6 @@ public class CreateHandlerTest {
         when(proxy.injectCredentialsAndInvokeV2(eq(getDefaultViewRequest), any()))
                 .thenReturn(getDefaultViewResponse);
 
-        AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
-                .viewArn(exampleArn1)
-                .build();
-
-        AssociateDefaultViewResponse associateDefaultViewResponse = AssociateDefaultViewResponse.builder()
-                .viewArn(exampleArn1)
-                .build();
-
-        when(proxy.injectCredentialsAndInvokeV2( eq(associateDefaultViewRequest), any()))
-                .thenReturn(associateDefaultViewResponse);
-
         final ResourceModel model = ResourceModel.builder()
                 .viewArn(exampleArn1)
                 .build();
@@ -91,7 +80,6 @@ public class CreateHandlerTest {
         assertThat(response.getStatus()).isEqualTo(OperationStatus.IN_PROGRESS);
         assertThat(response.getCallbackContext()).isNotNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(5);
-        assertThat(response.getResourceModel()).isEqualTo(model.toBuilder().associatedAwsPrincipal(ACCOUNT_ID).build());
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
         assertThat(response.getErrorCode()).isNull();
@@ -160,6 +148,7 @@ public class CreateHandlerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
+        assertThat(response.getResourceModel()).isEqualTo(model.toBuilder().associatedAwsPrincipal(ACCOUNT_ID).build());
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
     }
@@ -284,6 +273,7 @@ public class CreateHandlerTest {
                 .build();
 
         CallbackContext context = new CallbackContext();
+        context.preExistenceCheck = true;
 
         final ProgressEvent<ResourceModel, CallbackContext> response
                 = handler.handleRequest(proxy, request, context, logger);
