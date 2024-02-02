@@ -37,6 +37,8 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
 
         final ResourceModel model = request.getDesiredResourceState();
 
+        logger.log(String.format("[CREATE] callbackContext: " + callbackContext));
+
         if (callbackContext != null && callbackContext.preExistenceCheck) {
             // ADV API doesn't fail even if a view is already associated as default
             AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
@@ -71,15 +73,15 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
 
             logger.log(String.format("[CREATE] Default view arn: " + getDefaultViewResponse.viewArn()));
 
-            String viewArnFromResponse = getDefaultViewResponse.viewArn();
-
-            if (viewArnFromResponse == null) {
-                callbackContext.preExistenceCheck = true;
+            if (getDefaultViewResponse.viewArn() == null) {
+                CallbackContext newCallbackContext = CallbackContext.builder()
+                    .preExistenceCheck(true)
+                    .build();
                 return ProgressEvent.<ResourceModel, CallbackContext>builder()
                     .resourceModel(model)
                     .status(OperationStatus.IN_PROGRESS)
-                    .callbackContext(callbackContext)
-                    .callbackDelaySeconds(5)
+                    .callbackContext(newCallbackContext)
+                    .callbackDelaySeconds(30)
                     .build();
             } else {
                 logger.log(String.format("[CREATE] A default view is already associated."));

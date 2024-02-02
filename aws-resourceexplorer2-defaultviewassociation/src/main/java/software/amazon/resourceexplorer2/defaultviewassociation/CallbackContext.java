@@ -1,11 +1,10 @@
 package software.amazon.resourceexplorer2.defaultviewassociation;
 
-import software.amazon.cloudformation.proxy.StdCallbackContext;
+@lombok.Data
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
+@lombok.Builder
 
-@lombok.Getter
-@lombok.Setter
-@lombok.ToString
-@lombok.EqualsAndHashCode(callSuper = true)
-public class CallbackContext extends StdCallbackContext {
+public class CallbackContext {
     boolean preExistenceCheck;
 }
