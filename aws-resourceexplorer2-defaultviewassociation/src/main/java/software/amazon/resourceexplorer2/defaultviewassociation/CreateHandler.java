@@ -37,8 +37,6 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
 
         final ResourceModel model = request.getDesiredResourceState();
         logger.log(String.format("[CREATE] callbackContext: %s", callbackContext));
-        System.out.println("callback: " + callbackContext);
-        System.out.println("callback2: " + (callbackContext != null && callbackContext.isPreExistenceCheck()));
         return ProgressEvent.progress(model, callbackContext)
             .then(
                 progress -> (callbackContext != null && callbackContext.isPreExistenceCheck())
