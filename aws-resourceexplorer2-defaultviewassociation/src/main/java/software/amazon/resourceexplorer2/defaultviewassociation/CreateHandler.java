@@ -80,9 +80,6 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
             final CallbackContext callbackContext,
             final Logger logger
         ) {
-            if (callbackContext != null && callbackContext.isPreExistenceCheck()) {
-                return ProgressEvent.progress(model, callbackContext);
-              }
             GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
             GetDefaultViewResponse getDefaultViewResponse;
             try {
@@ -100,6 +97,6 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
             CallbackContext newCallbackContext = CallbackContext.builder()
                 .preExistenceCheck(true)
                 .build();
-            return ProgressEvent.progress(model, callbackContext);
+            return ProgressEvent.progress(model, newCallbackContext);
         }
     }
