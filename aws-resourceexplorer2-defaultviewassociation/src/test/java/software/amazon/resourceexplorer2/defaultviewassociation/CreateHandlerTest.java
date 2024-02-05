@@ -53,7 +53,7 @@ public class CreateHandlerTest {
     // This test verifies the success status of setting up a default view while there is
     // no existed default view in an account.
     @Test
-    public void handleRequest_NonExistedDefaultView_Results_InProgress() {
+    public void handleRequest_NonExistedDefaultView_Results_Success() {
 
         GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
 
@@ -71,15 +71,13 @@ public class CreateHandlerTest {
                 .awsAccountId(ACCOUNT_ID)
                 .build();
 
-        CallbackContext context = new CallbackContext();
-
         final ProgressEvent<ResourceModel, CallbackContext> response
-                = handler.handleRequest(proxy, request, context, logger);
+                = handler.handleRequest(proxy, request, null, logger);
 
         assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(OperationStatus.IN_PROGRESS);
-        assertThat(response.getCallbackContext()).isNotNull();
-        assertThat(response.getCallbackDelaySeconds()).isEqualTo(30);
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
+        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
         assertThat(response.getErrorCode()).isNull();
@@ -121,29 +119,6 @@ public class CreateHandlerTest {
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AlreadyExists);
     }
 
-    @Test
-    public void handleRequest_callbackContextIsSet() {
-
-        final ResourceModel model = ResourceModel.builder()
-                .viewArn(exampleArn1)
-                .build();
-
-        final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
-                .desiredResourceState(model)
-                .awsAccountId(ACCOUNT_ID)
-                .build();
-        CallbackContext callbackContext = new CallbackContext();
-        callbackContext.preExistenceCheck  = true;
-        final ProgressEvent<ResourceModel, CallbackContext> response
-                = handler.handleRequest(proxy, request, callbackContext, logger);
-
-        assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
-        assertThat(response.getResourceModel()).isEqualTo(model.toBuilder().associatedAwsPrincipal(ACCOUNT_ID).build());
-        assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
-        assertThat(response.getResourceModels()).isNull();
-    }
-
     // This test verifies the failed status of setting up the same default view already associated.
     @Test
     public void handleRequest_defaultViewAlreadyExisted() {
@@ -178,6 +153,35 @@ public class CreateHandlerTest {
         assertThat(response.getMessage()).isNotNull();
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AlreadyExists);
     }
+
+        // This test verifies the status of setting up the same default view already associated when idempotent.
+        @Test
+        public void handleRequest_preExistenceCheck_done() {
+    
+            final ResourceModel model = ResourceModel.builder()
+                    .viewArn(exampleArn1)
+                    .build();
+    
+            final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                    .desiredResourceState(model)
+                    .awsAccountId(ACCOUNT_ID)
+                    .build();
+
+           CallbackContext newCallbackContext = CallbackContext.builder()
+                    .preExistenceCheck(true)
+                    .build();
+    
+            final ProgressEvent<ResourceModel, CallbackContext> response
+                    = handler.handleRequest(proxy, request, newCallbackContext, logger);
+    
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
+        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
+        assertThat(response.getResourceModels()).isNull();
+        assertThat(response.getMessage()).isNull();
+        assertThat(response.getErrorCode()).isNull();
+        }
 
     @Test
     public void handleRequest_throwAccessDeniedException() {
@@ -256,15 +260,12 @@ public class CreateHandlerTest {
                 .awsAccountId(ACCOUNT_ID)
                 .build();
 
-        CallbackContext context = new CallbackContext();
-        context.preExistenceCheck = true;
-
         final ProgressEvent<ResourceModel, CallbackContext> response
-                = handler.handleRequest(proxy, request, context, logger);
+                = handler.handleRequest(proxy, request, null, logger);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
-        assertThat(response.getCallbackContext()).isNotNull();
+        assertThat(response.getCallbackContext()).isNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();

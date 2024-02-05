@@ -36,11 +36,24 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
         logRequestInfo(request, logger);
 
         final ResourceModel model = request.getDesiredResourceState();
+        logger.log(String.format("[CREATE] callbackContext: %s", callbackContext));
+        System.out.println("callback: " + callbackContext);
+        System.out.println("callback2: " + (callbackContext != null && callbackContext.isPreExistenceCheck()));
+        return ProgressEvent.progress(model, callbackContext)
+            .then(
+                progress -> (callbackContext != null && callbackContext.isPreExistenceCheck())
+                        ? progress
+                        : preExistenceCheck(request, proxy, model, callbackContext, logger))
+            .then(progress -> createResource(proxy, model, request, callbackContext, logger));
+        }
 
-        logger.log(String.format("[CREATE] callbackContext: " + callbackContext));
-
-        if (callbackContext != null && callbackContext.preExistenceCheck) {
-            // ADV API doesn't fail even if a view is already associated as default
+        private ProgressEvent<ResourceModel, CallbackContext> createResource(
+            final AmazonWebServicesClientProxy proxy,
+            final ResourceModel model,
+            final ResourceHandlerRequest<ResourceModel> request,
+            final CallbackContext callbackContext,
+            final Logger logger
+        ) {
             AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
                     .viewArn(model.getViewArn())
                     .build();
@@ -55,12 +68,23 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
                 logger.log(String.format("[CREATE] Creating DefaultView failed: %s", thisErrorCode));
                 return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not associate a default view: " + e.getMessage());
             }
+            
             return ProgressEvent.<ResourceModel, CallbackContext>builder()
                         .resourceModel(model)
                         .status(OperationStatus.SUCCESS)
                         .build();
-        } else {
-            // We need to check if there already exists a default view by using GetDefaultView operation.
+        }
+        
+        private ProgressEvent<ResourceModel, CallbackContext> preExistenceCheck(
+            final ResourceHandlerRequest<ResourceModel> request,
+            final AmazonWebServicesClientProxy proxy,
+            final ResourceModel model,
+            final CallbackContext callbackContext,
+            final Logger logger
+        ) {
+            if (callbackContext != null && callbackContext.isPreExistenceCheck()) {
+                return ProgressEvent.progress(model, callbackContext);
+              }
             GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
             GetDefaultViewResponse getDefaultViewResponse;
             try {
@@ -71,22 +95,13 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
                 return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not check default view: " + e.getMessage());
             }
 
-            logger.log(String.format("[CREATE] Default view arn: " + getDefaultViewResponse.viewArn()));
-
-            if (getDefaultViewResponse.viewArn() == null) {
-                CallbackContext newCallbackContext = CallbackContext.builder()
-                    .preExistenceCheck(true)
-                    .build();
-                return ProgressEvent.<ResourceModel, CallbackContext>builder()
-                    .resourceModel(model)
-                    .status(OperationStatus.IN_PROGRESS)
-                    .callbackContext(newCallbackContext)
-                    .callbackDelaySeconds(30)
-                    .build();
-            } else {
+            if (getDefaultViewResponse.viewArn() != null) {
                 logger.log(String.format("[CREATE] A default view is already associated."));
                 return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
             }
+            CallbackContext newCallbackContext = CallbackContext.builder()
+                .preExistenceCheck(true)
+                .build();
+            return ProgressEvent.progress(model, callbackContext);
         }
     }
-}
