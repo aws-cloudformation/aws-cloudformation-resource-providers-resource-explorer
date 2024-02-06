@@ -71,9 +71,17 @@ public class CreateHandlerTest {
                 .awsAccountId(ACCOUNT_ID)
                 .build();
 
-        final ProgressEvent<ResourceModel, CallbackContext> response
+        
+        ProgressEvent<ResourceModel, CallbackContext> response
                 = handler.handleRequest(proxy, request, null, logger);
-
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(OperationStatus.IN_PROGRESS);
+        assertThat(response.getCallbackDelaySeconds()).isEqualTo(1);
+        CallbackContext context = CallbackContext.builder()
+                .preExistenceCheck(true)
+                .build();
+        response = handler.handleRequest(proxy, request, context, logger);
+        
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
         assertThat(response.getCallbackContext()).isNull();
@@ -111,7 +119,7 @@ public class CreateHandlerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
-        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackContext()).isNotNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
@@ -146,7 +154,7 @@ public class CreateHandlerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
-        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackContext()).isNotNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
@@ -154,26 +162,26 @@ public class CreateHandlerTest {
         assertThat(response.getErrorCode()).isEqualTo(HandlerErrorCode.AlreadyExists);
     }
 
-        // This test verifies the status of setting up the same default view already associated when idempotent.
+        // This test verifies the status of setting up the same default view already associated when idempotent retry.
         @Test
         public void handleRequest_preExistenceCheck_done() {
-    
-            final ResourceModel model = ResourceModel.builder()
-                    .viewArn(exampleArn1)
-                    .build();
-    
-            final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
-                    .desiredResourceState(model)
-                    .awsAccountId(ACCOUNT_ID)
-                    .build();
 
-           CallbackContext newCallbackContext = CallbackContext.builder()
-                    .preExistenceCheck(true)
-                    .build();
-    
-            final ProgressEvent<ResourceModel, CallbackContext> response
-                    = handler.handleRequest(proxy, request, newCallbackContext, logger);
-    
+                final ResourceModel model = ResourceModel.builder()
+                        .viewArn(exampleArn1)
+                        .build();
+
+                final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
+                        .desiredResourceState(model)
+                        .awsAccountId(ACCOUNT_ID)
+                        .build();
+
+                CallbackContext newCallbackContext = CallbackContext.builder()
+                        .preExistenceCheck(true)
+                        .build();
+
+                final ProgressEvent<ResourceModel, CallbackContext> response
+                        = handler.handleRequest(proxy, request, newCallbackContext, logger);
+
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
         assertThat(response.getCallbackContext()).isNull();
@@ -203,7 +211,7 @@ public class CreateHandlerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
-        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackContext()).isNotNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
@@ -232,7 +240,7 @@ public class CreateHandlerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
-        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackContext()).isNotNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();
@@ -265,7 +273,7 @@ public class CreateHandlerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.FAILED);
-        assertThat(response.getCallbackContext()).isNull();
+        assertThat(response.getCallbackContext()).isNotNull();
         assertThat(response.getCallbackDelaySeconds()).isEqualTo(0);
         assertThat(response.getResourceModel()).isNotNull();
         assertThat(response.getResourceModels()).isNull();

@@ -37,11 +37,12 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
 
         final ResourceModel model = request.getDesiredResourceState();
         logger.log(String.format("[CREATE] callbackContext: %s", callbackContext));
+
         return ProgressEvent.progress(model, callbackContext)
             .then(
                 progress -> (callbackContext != null && callbackContext.isPreExistenceCheck())
                         ? progress
-                        : preExistenceCheck(request, proxy, model, callbackContext, logger))
+                        : preExistenceCheck(request, proxy, model, logger))
             .then(progress -> createResource(proxy, model, request, callbackContext, logger));
         }
 
@@ -52,34 +53,37 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
             final CallbackContext callbackContext,
             final Logger logger
         ) {
-            AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
-                    .viewArn(model.getViewArn())
-                    .build();
-            AssociateDefaultViewResponse associateDefaultViewResponse;
-            try {
-                associateDefaultViewResponse = proxy.injectCredentialsAndInvokeV2(associateDefaultViewRequest, client::associateDefaultView);
-                // only set the AssociatedAwsPrincipal if the request was successful.
-                model.setAssociatedAwsPrincipal(request.getAwsAccountId());
-                logger.log(String.format("[CREATE] DefaultView created successfully."));
-            } catch (Exception e){
-                HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-                logger.log(String.format("[CREATE] Creating DefaultView failed: %s", thisErrorCode));
-                return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not associate a default view: " + e.getMessage());
-            }
-            
-            return ProgressEvent.<ResourceModel, CallbackContext>builder()
-                        .resourceModel(model)
-                        .status(OperationStatus.SUCCESS)
-                        .build();
+       
+        AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
+                .viewArn(model.getViewArn())
+                .build();
+        AssociateDefaultViewResponse associateDefaultViewResponse;
+        try {
+            associateDefaultViewResponse = proxy.injectCredentialsAndInvokeV2( associateDefaultViewRequest, client::associateDefaultView );
+            // only set the AssociatedAwsPrincipal if the request was successful.
+            model.setAssociatedAwsPrincipal(request.getAwsAccountId());
+            logger.log(String.format("[CREATE] DefaultView created successfully."));
+        } catch (Exception e){
+            HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
+            logger.log(String.format("[CREATE] Creating DefaultView failed: %s", thisErrorCode));
+            return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not associate a default view: " + e.getMessage());
+        }
+        return ProgressEvent.<ResourceModel, CallbackContext>builder()
+                .resourceModel(model)
+                .status(OperationStatus.SUCCESS)
+                .build();
         }
         
         private ProgressEvent<ResourceModel, CallbackContext> preExistenceCheck(
             final ResourceHandlerRequest<ResourceModel> request,
             final AmazonWebServicesClientProxy proxy,
             final ResourceModel model,
-            final CallbackContext callbackContext,
             final Logger logger
         ) {
+            CallbackContext newCallbackContext = CallbackContext.builder()
+                .preExistenceCheck(true)
+                .build();
+            
             GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
             GetDefaultViewResponse getDefaultViewResponse;
             try {
@@ -87,16 +91,15 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
             } catch (Exception e){
                 logger.log(String.format("[CREATE] Error occurred in GetDefaultView."));
                 HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
-                return ProgressEvent.failed(model, callbackContext, thisErrorCode, "Could not check default view: " + e.getMessage());
+                return ProgressEvent.failed(model, newCallbackContext, thisErrorCode, "Could not check default view: " + e.getMessage());
             }
 
             if (getDefaultViewResponse.viewArn() != null) {
                 logger.log(String.format("[CREATE] A default view is already associated."));
-                return ProgressEvent.failed(model, callbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
+                return ProgressEvent.failed(model, newCallbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
             }
-            CallbackContext newCallbackContext = CallbackContext.builder()
-                .preExistenceCheck(true)
-                .build();
-            return ProgressEvent.progress(model, newCallbackContext);
+            
+            createResource(proxy, model, request, newCallbackContext, logger);
+            return ProgressEvent.defaultInProgressHandler(newCallbackContext, 1, model);
         }
     }
