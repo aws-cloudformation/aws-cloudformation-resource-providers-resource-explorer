@@ -53,7 +53,7 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
             final CallbackContext callbackContext,
             final Logger logger
         ) {
-       
+        logger.log(String.format("[CREATE] Inside method createResource, callbackContext: %s", callbackContext));
         AssociateDefaultViewRequest associateDefaultViewRequest = AssociateDefaultViewRequest.builder()
                 .viewArn(model.getViewArn())
                 .build();
@@ -80,26 +80,27 @@ public class CreateHandler extends REBaseHandler<CallbackContext> {
             final ResourceModel model,
             final Logger logger
         ) {
+            
             CallbackContext newCallbackContext = CallbackContext.builder()
                 .preExistenceCheck(true)
                 .build();
-            
+            logger.log(String.format("[CREATE][preExistenceCheck] executing preExistenceCheck, callbackContext: %s", newCallbackContext));
             GetDefaultViewRequest getDefaultViewRequest = GetDefaultViewRequest.builder().build();
             GetDefaultViewResponse getDefaultViewResponse;
             try {
                 getDefaultViewResponse = proxy.injectCredentialsAndInvokeV2( getDefaultViewRequest, client::getDefaultView );
+                model.setAssociatedAwsPrincipal(request.getAwsAccountId());
             } catch (Exception e){
-                logger.log(String.format("[CREATE] Error occurred in GetDefaultView."));
+                logger.log(String.format("[CREATE][preExistenceCheck] Error occurred in GetDefaultView."));
                 HandlerErrorCode thisErrorCode = Convertor.convertExceptionToErrorCode(e, logger);
                 return ProgressEvent.failed(model, newCallbackContext, thisErrorCode, "Could not check default view: " + e.getMessage());
             }
 
             if (getDefaultViewResponse.viewArn() != null) {
-                logger.log(String.format("[CREATE] A default view is already associated."));
+                logger.log(String.format("[CREATE][preExistenceCheck] A default view is already associated."));
                 return ProgressEvent.failed(model, newCallbackContext, HandlerErrorCode.AlreadyExists, "A default view is already associated.");
             }
             
-            createResource(proxy, model, request, newCallbackContext, logger);
             return ProgressEvent.defaultInProgressHandler(newCallbackContext, 1, model);
         }
     }
