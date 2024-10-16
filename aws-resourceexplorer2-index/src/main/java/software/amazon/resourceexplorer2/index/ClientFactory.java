@@ -19,7 +19,7 @@ public class ClientFactory {
 
         if(client == null) {
             client = ResourceExplorer2Client.builder()
-                    .endpointOverride(URI.create(String.format("https://resource-explorer-2.%s.api.aws", getRegion())))
+                    .endpointOverride(URI.create(String.format("https://resource-explorer-2.%s.amazonaws.com", getRegion())))
                     .region(Region.of(getRegion()))
                     .build();
         }
