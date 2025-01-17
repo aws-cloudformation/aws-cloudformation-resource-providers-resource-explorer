@@ -75,9 +75,6 @@ public class UpdateHandlerTest {
             putAll(SYSTEM_TAGS);
         }};
 
-        doReturn(previousListTags)
-                .when(handler)
-                .listTags(proxy, EXAMPLE_ARN, logger);
 
         final ResourceModel previousModel = ResourceModel.builder()
                 .viewArn(EXAMPLE_ARN)
@@ -94,6 +91,7 @@ public class UpdateHandlerTest {
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .previousResourceState(previousModel)
                 .desiredResourceState(desiredModel)
+                .previousResourceTags(previousListTags)
                 .systemTags(SYSTEM_TAGS)
                 .build();
 
@@ -136,9 +134,6 @@ public class UpdateHandlerTest {
             putAll(SYSTEM_TAGS);
         }};
 
-        doReturn(previousListTags)
-                .when(handler)
-                .listTags(proxy, EXAMPLE_ARN, logger);
 
         final ResourceModel previousModel = ResourceModel.builder()
                 .viewArn(EXAMPLE_ARN)
@@ -154,6 +149,7 @@ public class UpdateHandlerTest {
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .previousResourceState(previousModel)
                 .desiredResourceState(desiredModel)
+                .previousResourceTags(previousListTags)
                 .desiredResourceTags(STACK_LEVEL_TAGS)
                 .systemTags(SYSTEM_TAGS)
                 .build();

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 
@@ -75,7 +76,17 @@ public class UpdateHandler extends REBaseHandler<CallbackContext> {
         ResourceModel desiredModel = request.getDesiredResourceState();
 
         // First, we need to get the current tags of this View.
-        Map<String, String> currentTags = listTags(proxy, desiredModel.getViewArn(), logger);
+        Map<String, String> currentTags = new HashMap<>();
+
+        Map<String, String> previousResourceTags = request.getPreviousResourceTags();
+        Map<String, String> previousSystemTags = request.getPreviousSystemTags();
+        Map<String, String> previousTags = request.getPreviousResourceState().getTags();
+
+        if (previousResourceTags != null) currentTags.putAll(previousResourceTags);
+        if (previousSystemTags != null) currentTags.putAll(previousSystemTags);
+        if (previousTags != null) currentTags.putAll(previousTags);
+
+
 
         // Generate all types of desired tags into one map.
         Map<String,String> desiredTags = TagTools.combineAllTypesOfTags(desiredModel, request, logger);
@@ -146,10 +157,5 @@ public class UpdateHandler extends REBaseHandler<CallbackContext> {
 
     }
 
-    @VisibleForTesting
-    Map<String, String> listTags(AmazonWebServicesClientProxy proxy,
-                                 String viewArn, Logger logger){
-        Map<String, String> tags = TagTools.listTagsForView(client, proxy, logger, viewArn);
-        return tags;
-    }
+
 }
