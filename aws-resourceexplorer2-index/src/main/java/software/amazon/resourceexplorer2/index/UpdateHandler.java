@@ -26,6 +26,7 @@ import static software.amazon.resourceexplorer2.index.IndexUtils.UPDATING;
 
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -173,7 +174,17 @@ public class UpdateHandler extends REBaseHandler<CallbackContext> {
         ResourceModel desiredModel = request.getDesiredResourceState();
 
         // First, we need to get the current tags of this Index by using ListTagsForResource.
-        Map<String, String> currentTags = listTags(proxy, desiredModel.getArn(), logger);
+        Map<String, String> currentTags = new HashMap<>();
+
+        Map<String, String> previousResourceTags = request.getPreviousResourceTags();
+        Map<String, String> previousSystemTags = request.getPreviousSystemTags();
+        Map<String, String> previousTags = null;
+        if (request.getPreviousResourceState()!=null)
+            previousTags = request.getPreviousResourceState().getTags();
+
+        if (previousResourceTags != null) currentTags.putAll(previousResourceTags);
+        if (previousSystemTags != null) currentTags.putAll(previousSystemTags);
+        if (previousTags != null) currentTags.putAll(previousTags);
 
         // Generate all types of desired tags into one map.
         Map<String,String> desiredTags = TagTools.combineAllTypesOfTags(desiredModel, request, logger);
@@ -211,9 +222,5 @@ public class UpdateHandler extends REBaseHandler<CallbackContext> {
 
     }
 
-    @VisibleForTesting
-    Map<String, String> listTags(AmazonWebServicesClientProxy proxy,
-                                 String indexArn, Logger logger){
-        return TagTools.listTagsForIndex(client, proxy, logger, indexArn);
-    }
+
 }

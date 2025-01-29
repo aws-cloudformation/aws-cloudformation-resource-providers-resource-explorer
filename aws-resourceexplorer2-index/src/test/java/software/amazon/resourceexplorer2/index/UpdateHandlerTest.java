@@ -93,9 +93,7 @@ public class UpdateHandlerTest {
                 .resourceArn(INDEX_ARN_1)
                 .build();
 
-        doReturn(ListTagsForResourceResponse.builder().tags(previousListTags).build())
-                .when(proxy)
-                .injectCredentialsAndInvokeV2(eq(listTagsForResourceRequest), any());
+
 
         // Build GetIndexRequest and GetIndexResponse
         GetIndexRequest getIndexRequest = GetIndexRequest.builder().build();
@@ -132,6 +130,8 @@ public class UpdateHandlerTest {
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(desiredModel)
+                .previousResourceTags(PRE_STACK_LEVEL_TAGS)
+                .previousSystemTags(SYSTEM_TAGS)
                 .build();
 
         final ProgressEvent<ResourceModel, CallbackContext> response
@@ -148,17 +148,16 @@ public class UpdateHandlerTest {
 
         // Capture the actual GetIndexRequest, UpdateIndexTypeRequest and UntagResourceRequest in the Update handler.
         ArgumentCaptor<ResourceExplorer2Request> capturedRequest = ArgumentCaptor.forClass(UpdateIndexTypeRequest.class);
-        verify(proxy, times(4)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
+        verify(proxy, times(3)).injectCredentialsAndInvokeV2(capturedRequest.capture(), any());
         List<ResourceExplorer2Request> invokedResourceExplorer2Request = capturedRequest.getAllValues();
 
         UpdateIndexTypeRequest invokedUpdateIndexTypeRequest = (UpdateIndexTypeRequest) invokedResourceExplorer2Request.get(1);
         assertThat(invokedUpdateIndexTypeRequest.arn()).isEqualTo(desiredModel.getArn());
         assertThat(invokedUpdateIndexTypeRequest.typeAsString()).isEqualTo(desiredModel.getType());
 
-        ListTagsForResourceRequest invokedListTagsForResourceRequest = (ListTagsForResourceRequest) invokedResourceExplorer2Request.get(2);
-        assertThat(invokedListTagsForResourceRequest.resourceArn()).isEqualTo(desiredModel.getArn());
 
-        UntagResourceRequest invokedUntagResourceRequest = (UntagResourceRequest) invokedResourceExplorer2Request.get(3);
+
+        UntagResourceRequest invokedUntagResourceRequest = (UntagResourceRequest) invokedResourceExplorer2Request.get(2);
         assertThat(invokedUntagResourceRequest.resourceArn()).isEqualTo(desiredModel.getArn());
         assertThat(invokedUntagResourceRequest.tagKeys().size()).isEqualTo(1);
         assertThat(invokedUntagResourceRequest.tagKeys().get(0)).isEqualTo("StackLevelTag");
@@ -242,9 +241,7 @@ public class UpdateHandlerTest {
             putAll(SYSTEM_TAGS);
         }};
 
-        doReturn(previousListTags)
-                .when(handler)
-                .listTags(proxy, INDEX_ARN_1, logger);
+
 
         doReturn(GetIndexResponse.builder().arn(INDEX_ARN_1).type(AGGREGATOR)
                 .state(ACTIVE)
@@ -265,6 +262,8 @@ public class UpdateHandlerTest {
 
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(desiredModel)
+                .previousResourceTags(PRE_STACK_LEVEL_TAGS)
+                .previousSystemTags(SYSTEM_TAGS)
                 .build();
 
         final ProgressEvent<ResourceModel, CallbackContext> response
@@ -272,7 +271,6 @@ public class UpdateHandlerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
-        assertThat(response.getCallbackContext()).isNull();
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
@@ -396,9 +394,7 @@ public class UpdateHandlerTest {
             putAll(SYSTEM_TAGS);
         }};
 
-        doReturn(previousListTags)
-                .when(handler)
-                .listTags(proxy, INDEX_ARN_1, logger);
+
 
         // Build GetIndexRequest and GetIndexResponse
         GetIndexRequest getIndexRequest = GetIndexRequest.builder().build();
@@ -422,6 +418,8 @@ public class UpdateHandlerTest {
         final ResourceHandlerRequest<ResourceModel> request = ResourceHandlerRequest.<ResourceModel>builder()
                 .desiredResourceState(desiredModel)
                 .desiredResourceTags(STACK_LEVEL_TAGS)
+                .previousResourceTags(PRE_STACK_LEVEL_TAGS)
+                .previousSystemTags(SYSTEM_TAGS)
                 .systemTags(SYSTEM_TAGS)
                 .build();
 
@@ -430,7 +428,6 @@ public class UpdateHandlerTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(OperationStatus.SUCCESS);
-        assertThat(response.getCallbackContext()).isNull();
         assertThat(response.getResourceModel()).isEqualTo(request.getDesiredResourceState());
         assertThat(response.getResourceModels()).isNull();
         assertThat(response.getMessage()).isNull();
